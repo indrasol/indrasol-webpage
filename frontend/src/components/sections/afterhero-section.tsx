@@ -65,9 +65,8 @@ export function AfterHeroSection() {
           </div>
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
             Comprehensive 
-            <span className="text-indrasol-blue relative ml-2">
-              <span className="relative z-10">Service Architecture</span>
-              
+            <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue bg-clip-text text-transparent ml-2">
+              Service Architecture
             </span>
           </h2>
           <p className="text-gray-600 max-w-3xl mx-auto text-lg md:text-xl leading-relaxed">
@@ -146,19 +145,8 @@ export function AfterHeroSection() {
         </motion.div>
       </div>
       
-      {/* Enhanced diagonal divider with animation */}
-      <div className="absolute bottom-0 left-0 w-full h-16 overflow-hidden">
-        <motion.svg 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="absolute bottom-0 w-full h-16" 
-          viewBox="0 0 1440 70" 
-          preserveAspectRatio="none"
-        >
-          <path fill="#fff" d="M0,70 L1440,0 L1440,70 L0,70 Z"></path>
-        </motion.svg>
-      </div>
+      {/* Straight border divider */}
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
       
       {/* Add keyframes for shine animation */}
       <style>{`

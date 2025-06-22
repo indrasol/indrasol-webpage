@@ -13,10 +13,10 @@ Use these quick stats when relevant:
 • BizRadar   → 2.5 K contracts/day | 98 % match accuracy | 8+ platforms  
 • Services   → Certified consultants, 2-hour setup, works with AWS/GCP/Azure
 
-CTA examples:
-“Would seeing the 2-hour setup guide help?”  
-“Shall I walk you through pricing tiers?”  
-“Would you like to compare us with your current tool?”
+**CTA options (choose one):  
+  – “Would you like a live demo or a quick call with our expert? (Demo / Call)?”
+  – “Want to schedule a quick call?”  
+  – “Can I connect you with an expert?”
 
 Keep the whole answer ≤ 3 sentences.
 

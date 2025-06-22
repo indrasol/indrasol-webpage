@@ -10,7 +10,7 @@ from models.response_models import ChatResponse
 from services.objection_service import contains_objection          # async bool
 from services.lead_service import detect_service, is_hot_lead      # async str / bool
 from services.supabase_service import upsert_conversation_memory, sync_qualified_lead, get_conversation_memory, get_conversation_history
-from services.detect_intent_service import is_demo_request, is_positive_response
+from services.detect_intent_service import is_demo_request, is_positive_response, is_call_request
 
 # ────── AI agents ──────
 from agents.engagement_agent import run_engagement_agent
@@ -20,8 +20,6 @@ from agents.sales_agent import run_sales_agent
 from agents.objection_agent import run_objection_agent
 from agents.summary_agent import run_summary_agent
 from agents.info_agent import run_info_agent
-from agents.follow_up_agent import run_follow_up_agent
-from services.factual_detector_service import is_pure_factual
 from config.logging import setup_logging
 
 def build_updated_history(existing_history: list, user_query: str, bot_response: str) -> list:
@@ -135,55 +133,127 @@ async def chat_controller(req: QueryRequest):
         # =====================================================================
         # 1. DEMO-FLOW (follow-up agent) – Only for explicit demo requests and ongoing collections
         # =====================================================================
-        # ------------------------------------------------------------------
-        # 1) pull last assistant line & memory
-        # ------------------------------------------------------------------
         memory_row   = await get_conversation_memory(req.user_id) or {}
         assistant_ln = (await get_last_bot_messages(req.user_id, 1) or [""])[0].lower()
         user_text    = req.query.lower().strip()
 
         # ------------------------------------------------------------------
-        # 2) demo intent detection (RapidFuzz + exact)
+        # 2) detectors
         # ------------------------------------------------------------------
-        explicit_demo_request     = is_demo_request(user_text)
-        bot_offered_demo          = is_demo_request(assistant_ln)
-        user_accepted_offer       = is_positive_response(user_text)
+        explicit_demo_request   = is_demo_request(user_text)
+        explicit_call_request   = is_call_request(user_text)
+        user_positive_only      = is_positive_response(user_text) and not (explicit_demo_request or explicit_call_request)
+
+        bot_offered_demo = is_demo_request(assistant_ln)
+        bot_offered_call = is_call_request(assistant_ln)
+
+        user_accepted_offer = is_positive_response(user_text)
+
         demo_offered_and_accepted = bot_offered_demo and user_accepted_offer
+        call_offered_and_accepted = bot_offered_call  and user_accepted_offer
 
         # ------------------------------------------------------------------
-        # 3) when to launch contact-form CTA
+        # 3) branch A – user picked one explicitly
         # ------------------------------------------------------------------
-        if explicit_demo_request or demo_offered_and_accepted:
-            logging.info("Demo request detected, routing to CTA Agent")
-            reply = ("Great! I can get that demo scheduled. "
-                    "Please fill in the quick form for us so our team "
-                    "will reach out as soon as possible.")
+        if explicit_demo_request or explicit_call_request:
+            is_call        = explicit_call_request
+            cta_type       = "call" if is_call else "demo"
+            intent_label   = "Call Booking" if is_call else "Demo Booking"
+            stage_key      = "collecting_call_info" if is_call else "collecting_info"
+
+            reply = (
+                f"Great! I can get that {cta_type} scheduled. "
+                "Please fill in the quick form so our team can reach out."
+            )
 
             full_history = build_updated_history(req.history, req.query, reply)
             await upsert_conversation_memory(
                 user_id=req.user_id,
                 memory={
-                    "intent":     "Demo Booking",
+                    "intent":     intent_label,
                     "product":    "",
                     "service":    "",
                     "qualified":  True,
                     "last_agent": "CTA",
-                    "demo_stage": "collecting_info"
+                    "demo_stage": stage_key
                 },
                 history=full_history
             )
             return ChatResponse(
                 response     = reply,
-                intent       = "Demo Booking",
+                intent       = intent_label,
+                routed_agent = "CTA",
+                action       = "contact_form"        # FE shows the form directly
+            )
+
+        # ------------------------------------------------------------------
+        # 4) User said "yes" but didn't specify
+        # ------------------------------------------------------------------
+        if user_positive_only and (bot_offered_demo or bot_offered_call):
+
+            # 4a) Bot previously offered BOTH options → ask for choice
+            if bot_offered_demo and bot_offered_call:
+                clarify_reply = (
+                    "Sure thing! Would you prefer a **live demo** or a **quick call**? _(Demo / Call)_"
+                )
+                full_history = build_updated_history(req.history, req.query, clarify_reply)
+                await upsert_conversation_memory(
+                    user_id=req.user_id,
+                    memory={
+                        "intent":     "Clarify Method",
+                        "product":    "",
+                        "service":    "",
+                        "qualified":  True,
+                        "last_agent": "CTA",
+                        "demo_stage": "awaiting_choice"
+                    },
+                    history=full_history
+                )
+                return ChatResponse(
+                    response     = clarify_reply,
+                    intent       = "Clarify Method",
+                    routed_agent = "CTA",
+                    action       = "choose_contact_method"   # FE shows Demo / Call buttons
+                )
+
+            # ------------------------------------------------------------------
+            # 4) Bot offered only one option → proceed automatically
+            # ------------------------------------------------------------------
+            is_call        = bot_offered_call and not bot_offered_demo
+            cta_type       = "call" if is_call else "demo"
+            intent_label   = "Call Booking" if is_call else "Demo Booking"
+            stage_key      = "collecting_call_info" if is_call else "collecting_info"
+
+            reply = (
+                f"Perfect! Let’s lock in that {cta_type}. "
+                "Just fill in the quick form so our team can reach out."
+            )
+
+            full_history = build_updated_history(req.history, req.query, reply)
+            await upsert_conversation_memory(
+                user_id=req.user_id,
+                memory={
+                    "intent":     intent_label,
+                    "product":    "",
+                    "service":    "",
+                    "qualified":  True,
+                    "last_agent": "CTA",
+                    "demo_stage": stage_key
+                },
+                history=full_history
+            )
+            return ChatResponse(
+                response     = reply,
+                intent       = intent_label,
                 routed_agent = "CTA",
                 action       = "contact_form"
             )
 
         # ------------------------------------------------------------------
-        # 4) If user was mid-demo but asks unrelated question → clear state
+        # 5) If user was mid-demo but asks unrelated question → clear state
         # ------------------------------------------------------------------
         if (memory_row.get("last_agent") == "CTA" and
-            memory_row.get("demo_stage") == "collecting_info"):
+            memory_row.get("demo_stage") in {"collecting_info", "collecting_call_info"}):
 
             # simple heuristic: anything longer than 5 tokens & starting with a WH-word
             first = user_text.split()[0] if user_text else ""

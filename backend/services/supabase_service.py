@@ -188,10 +188,12 @@ async def sync_qualified_lead(lead: dict):
 
         payload = {
             "user_id": lead["user_id"],
-            "email": lead.get("email"),
+            "email": lead.get("email",""),
             "intent": lead["intent"],
-            "product": lead["product"],
-            "service": lead["service"],
+            "product": lead.get("product",""),
+            "service": lead.get("service",""),
+            "phone": lead.get("phone",""),
+            "call_time": lead.get("call_time") or None,
             "qualified": True,
             "last_message": lead.get("last_message", ""),
             "submitted_at": datetime.utcnow().isoformat()
@@ -279,7 +281,9 @@ async def insert_lead_log(lead: dict):
         payload = {
             "user_id": lead["user_id"],
             "name": lead.get("name"),
-            "email": lead.get("email"),
+            "email": lead.get("email",""),
+            "phone": lead.get("phone",""),
+            "call_time": lead.get("call_time") or None,
             "company": lead.get("company"),
             "message": lead.get("message", ""),
             "channel": lead.get("channel", ""),

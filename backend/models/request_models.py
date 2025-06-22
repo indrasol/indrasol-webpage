@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import List, Optional, Union
+from datetime import datetime
 
 
 # Chat Request Model
@@ -18,3 +19,11 @@ class ContactForm(BaseModel):
     email: EmailStr
     company: Optional[str] = None
     message: str
+
+class CallForm(BaseModel):
+    user_id: str
+    name: str
+    phone_number: str
+    date: str  # e.g. "2025-06-23"
+    time: str  # e.g. "14:00"
+    tz: str = "America/Chicago"  # default timezone

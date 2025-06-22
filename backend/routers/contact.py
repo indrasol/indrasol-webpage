@@ -1,12 +1,13 @@
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 from config.logging import setup_logging
 import logging
-from models.request_models import ContactForm
+from models.request_models import ContactForm, CallForm
 from services.email_service import process_contact
-from services.teams_service import format_teams_message
+from services.teams_service import format_teams_message, format_call_message
 from services.supabase_service import sync_qualified_lead, insert_lead_log
 from services.detect_intent_service import detect_interest
 from services.supabase_service import get_conversation_history
+from services.vapi_service import schedule_vapi_call
 
 setup_logging()
 
@@ -86,15 +87,73 @@ async def contact_handler(
         "channel":     channel,  # Only successful channels
     })
 
-@contact_router.post("/email_contact", status_code=202)
-async def submit_contact_form(bg: BackgroundTasks, form: ContactForm):
-    """Accept the form and queue async email job."""
-    bg.add_task(process_contact, form, is_bot=False)
-    return {"detail": "Message accepted – we’ll be in touch soon!"}
+@contact_router.post("/call", status_code=202)
+async def call_handler(
+    form: CallForm,
+    bt: BackgroundTasks
+):
+    try:
+        channel = []
+        
+        # ---------- Try to schedule the Vapi call ----------
+        call_schedule_success = False
+        try:
+            bt.add_task(schedule_vapi_call, form)
+            channel.append("vapi")
+            call_schedule_success = True
+        except Exception as e:
+            logging.error(f"Vapi call scheduling failed: {e}")
+
+        # ---------- Try Teams notification ----------
+        teams_success = False
+        try:
+            await format_call_message(form)
+            channel.append("teams")
+            teams_success = True
+        except Exception as e:
+            logging.error(f"Teams notification failed: {e}")
+            
+        # ---------- Throw error if both processes failed ----------
+        if not call_schedule_success and not teams_success:
+            raise HTTPException(
+                status_code=500,
+                detail="Failed to process call request. Please try again."
+            )
+
+        # 2) push to Supabase
+        call_datetime_str = f"{form.date} {form.time} {form.tz}"
+        await sync_qualified_lead({
+            "user_id":  form.user_id,
+            "name":     form.name,
+            "phone":    form.phone_number,
+            "intent":   "Scheduled Call",
+            "qualified": True,
+            "call_time": call_datetime_str
+        })
+
+        await insert_lead_log({
+            "user_id": form.user_id,
+            "name":    form.name,
+            "phone":   form.phone_number,
+            "call_time": call_datetime_str,
+            "channel": channel  # Use the validated channels
+        })
+
+        return {"detail": "Call scheduled 👍"}
+    except Exception as e:
+        logging.exception("Vapi scheduling failed")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-@contact_router.post("/notify_teams", status_code=202)
-async def notify_teams(bg: BackgroundTasks, form: ContactForm):
-    """Accept the form and queue async email job."""
-    bg.add_task(format_teams_message, form)
-    return {"detail": "Message accepted – we’ll be in touch soon!"}
+# @contact_router.post("/email_contact", status_code=202)
+# async def submit_contact_form(bg: BackgroundTasks, form: ContactForm):
+#     """Accept the form and queue async email job."""
+#     bg.add_task(process_contact, form, is_bot=False)
+#     return {"detail": "Message accepted – we’ll be in touch soon!"}
+
+
+# @contact_router.post("/notify_teams", status_code=202)
+# async def notify_teams(bg: BackgroundTasks, form: ContactForm):
+#     """Accept the form and queue async email job."""
+#     bg.add_task(format_teams_message, form)
+#     return {"detail": "Message accepted – we’ll be in touch soon!"}

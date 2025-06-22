@@ -5,6 +5,7 @@ export interface Message {
     isTyping?: boolean;
     suggested?: string[];
     action?: string;
+    intent?: string;
   }
   
   export interface ChatState {
