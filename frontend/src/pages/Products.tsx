@@ -122,7 +122,7 @@ const ProductCard = ({
           {/* CTA button */}
           <Link 
             to={link}
-            className="group/btn inline-flex items-center justify-center px-5 py-2.5 bg-indrasol-blue text-white rounded-lg hover:bg-indrasol-blue/90 transition-all duration-300 mt-auto"
+            className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue hover:shadow-lg text-white px-4 py-2 rounded-lg font-medium shadow-md shadow-indrasol-blue/20 transition-all duration-300 transform hover:scale-[1.02] group/btn inline-flex items-center justify-center mt-auto"
           >
             {linkText}
             <ArrowRight className="ml-2 h-4 w-4 group-hover/btn:translate-x-1 transition-transform" strokeWidth={2} />
@@ -170,7 +170,7 @@ const ProductsHeroSection = () => {
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
             <span className="text-black">Intelligent Solutions For</span>
             <br />
-            <span className="text-indrasol-blue">Modern Business Challenges</span>
+            <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue bg-clip-text text-transparent">Modern Business Challenges</span>
           </h1>
           
           {/* Description */}
@@ -183,7 +183,7 @@ const ProductsHeroSection = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
               to="/contact" 
-              className="group px-6 py-3 bg-indrasol-blue text-white rounded-lg hover:bg-indrasol-blue/90 transition-all duration-300 inline-flex items-center justify-center shadow-lg shadow-indrasol-blue/20"
+              className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue hover:shadow-lg text-white px-4 py-2 rounded-lg font-medium shadow-md shadow-indrasol-blue/20 transition-all duration-300 transform hover:scale-[1.02] group inline-flex items-center justify-center"
             >
               Request Demo 
               <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" strokeWidth={2} />
@@ -415,9 +415,9 @@ const Products = () => {
 
             {/* Coming Soon section */}
             <div className="mt-16 text-center">
-              <div className="inline-flex items-center bg-indrasol-orange/10 px-6 py-3 rounded-full">
-                <Activity className="h-5 w-5 text-indrasol-orange mr-2" />
-                <span className="text-indrasol-orange font-semibold">
+              <div className="inline-flex items-center bg-indrasol-blue/10 px-6 py-3 rounded-full">
+                <Activity className="h-5 w-5 text-indrasol-blue mr-2" />
+                <span className="text-indrasol-blue font-semibold">
                   More innovative products coming soon!
                 </span>
               </div>

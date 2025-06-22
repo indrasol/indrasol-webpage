@@ -36,12 +36,13 @@ export function Navbar() {
   return (
     <header className="w-full bg-white/95 shadow-sm fixed top-0 left-0 right-0 z-50 backdrop-blur-sm">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/" className="flex items-center">
+        <Link to="/" className="flex items-end gap-0">
           <img 
-            src="/lovable-uploads/Indrasol company logo_.png" 
+            src="/favicon.ico" 
             alt="Indrasol Logo" 
-            className="h-12"
+            className="h-9 w-9"
           />
+          <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue bg-clip-text text-transparent font-bold text-4xl hidden sm:block tracking-tight leading-none">Indrasol</span>
         </Link>
         
         {/* Desktop Navigation */}
@@ -49,7 +50,7 @@ export function Navbar() {
           <NavLinks className="text-gray-700 font-medium hover:text-indrasol-blue transition-colors" />
           <Link 
             to="/contact" 
-            className="px-5 py-2 bg-indrasol-blue text-white rounded-md hover:bg-indrasol-darkblue transition-colors"
+            className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue hover:shadow-lg text-white px-4 py-2 rounded-lg font-medium shadow-md shadow-indrasol-blue/20 transition-all duration-300 transform hover:scale-[1.02]"
           >
             Contact Us
           </Link>
@@ -72,7 +73,7 @@ export function Navbar() {
             <NavLinks className="block py-2 text-gray-700 hover:text-indrasol-blue transition-colors" isMobile={true} />
             <Link 
               to="/contact" 
-              className="block py-2 px-4 text-center bg-indrasol-blue text-white rounded-md hover:bg-indrasol-darkblue transition-colors"
+              className="block py-3 px-6 text-center bg-gradient-to-r from-indrasol-blue to-indrasol-blue hover:shadow-lg text-white rounded-lg font-medium shadow-md shadow-indrasol-blue/20 transition-all duration-300 transform hover:scale-[1.02]"
             >
               Contact Us
             </Link>

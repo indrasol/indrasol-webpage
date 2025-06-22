@@ -12,8 +12,7 @@ Guidelines
 * Use the strongest stat in rag_context (e.g., “76 % faster audits”, “2.5 K contracts/day”).
 * Mention product OR service that best matches the user_message.
 * CTA options (choose one):  
-  – “Would you like a live demo?”  
-  – “Shall I send the integration guide?”  
+  – “Would you like a live demo or a quick call with our expert? (Demo / Call)?”
   – “Want to schedule a quick call?”  
   – “Can I connect you with an expert?”
 

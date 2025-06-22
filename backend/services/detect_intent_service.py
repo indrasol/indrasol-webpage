@@ -1,9 +1,17 @@
 """
+RapidFuzz is a library for approximate string matching.
+MIT licensed Package based on "Levenshtein / ratio / partial_ratio" algorithms 
+Approximately 60-300× faster than fuzzywuzzy
+
+Use Cases :
+Users type "Secure-trak", "Biz radarr", "clod security"; exact in checks miss these.
+RapidFuzz adds ~300 kB to the wheelhouse, zero extra runtime deps, MIT license
+
 High-speed fuzzy keyword detection for:
 
   • Product / Service interest          → detect_interest()
   • Demo-request trigger                → is_demo_request()
-  • Positive ‘yes’ style confirmations  → is_positive_response()
+  • Positive 'yes' style confirmations  → is_positive_response()
 
 Powered by RapidFuzz (≈300 kB, MIT, SIMD) so each call is <1 ms.
 """
@@ -35,9 +43,19 @@ SERVICE_KEYWORDS = {
 # Demo-intent word lists
 # ---------------------------------------------------------------------------
 DEMO_TRIGGERS = [
-    "book demo", "schedule demo", "demo", "live demo", "quick call",
-    "book a demo", "schedule a demo", "connect me", "connect with",
-    "speak to", "expert team"
+    "book demo", "schedule demo", "demo", "live demo", 
+    "book a demo", "schedule a demo", "expert team"
+]
+
+
+# ---------------------------------------------------------------------------
+# Call-intent word lists
+# ---------------------------------------------------------------------------
+
+CALL_TRIGGERS = [
+    "quick call", "phone call", "call", "schedule call", "book call",
+    "connect me", "connect with", "speak to", "speak with", "talk to",
+    "contact", "reach out", "get in touch", "discussion", "consultation"
 ]
 
 POSITIVE_WORDS = [
@@ -99,6 +117,10 @@ def detect_interest(*texts: str) -> tuple[str, str]:
 def is_demo_request(text: str) -> bool:
     """True if user explicitly asks for/speaks about a demo or quick call."""
     return fuzzy_contains(text, DEMO_TRIGGERS)
+
+def is_call_request(text: str) -> bool:
+    """True if user explicitly asks for/speaks about a call or consultation."""
+    return fuzzy_contains(text, CALL_TRIGGERS)
 
 def is_positive_response(text: str) -> bool:
     """True if user answers with a positive confirmation (yes/ok/… )."""

@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { X, Send, Mic } from "lucide-react";
 import { chatService } from "../../services/chatService";
 import { Message as BaseMessage } from "../../types/chat";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { ContactFormOverlay } from "./contactFormOverlay";
+import { CallFormOverlay } from "./callFormOverlay";
 import { SpeechOverlay, type SpeechRecognition, type SpeechRecognitionEvent, type SpeechRecognitionErrorEvent } from "./speechOverlay";
+import QuickActionButtons from "./QuickActionButtons";
 
 // Extend Message type to include optional originalText and isTyping
 type Message = BaseMessage & {
@@ -13,6 +15,7 @@ type Message = BaseMessage & {
   isTyping?: boolean;
   processedText?: string;
   action?: string;
+  intent?: string;
 };
 
 
@@ -190,6 +193,8 @@ export const ChatBot: React.FC = () => {
   const [isSpeechSupported, setIsSpeechSupported] = useState<boolean>(false);
 
   const [showContactForm, setShowContactForm] = useState(false);
+  const [showCallForm, setShowCallForm] = useState(false);
+  const [quickActionPending, setQuickActionPending] = useState(false);
 
   // Initialize Speech Recognition
   useEffect(() => {
@@ -280,6 +285,20 @@ export const ChatBot: React.FC = () => {
     await handleSend(clean, optimistic);
   };
 
+  /**
+   * Fire a follow-up message ("Demo" | "Call") silently
+   */
+  const sendFollowUp = useCallback(
+    async (text: string) => {
+      try {
+        await chatService.sendMessage(text, messages);      // no optimistic push
+      } catch (e) {
+        console.error("follow-up failed", e);
+      }
+    },
+    [messages]
+  );
+
   // Reset chat when closed and reopened
   useEffect(() => {
     if (!isOpen) {
@@ -338,24 +357,28 @@ export const ChatBot: React.FC = () => {
     setMessages((prev) => {
       const updated = prev.map((m) => (m.id === id ? { ...m, isTyping: false } : m));
       
-      // Check if this message should trigger contact form after typing is done
-      const message = updated.find(m => m.id === id);
-      if (message?.action === "contact_form") {
-        // Wait 3 seconds after typing is complete for user to read the message
-        setTimeout(() => {
-          // Double-check that the bot response is fully typed before showing form
-          setMessages((currentMessages) => {
-            const contactFormMessage = currentMessages.find(m => m.id === id && m.action === "contact_form");
-            
-            // Only show contact form if message exists and is NOT typing
-            if (contactFormMessage && !contactFormMessage.isTyping) {
-              setShowContactForm(true);
-            }
-            
-            return currentMessages; // No change to messages, just checking state
-          });
-        }, 2000);
-      }
+                // Check if this message should trigger contact form after typing is done
+          const message = updated.find(m => m.id === id);
+          if (message?.action === "contact_form") {
+            // Wait 3 seconds after typing is complete for user to read the message
+            setTimeout(() => {
+              // Double-check that the bot response is fully typed before showing form
+              setMessages((currentMessages) => {
+                const contactFormMessage = currentMessages.find(m => m.id === id && m.action === "contact_form");
+                
+                // Only show contact form if message exists and is NOT typing
+                if (contactFormMessage && !contactFormMessage.isTyping) {
+                  if (contactFormMessage.intent === "Call Booking") {
+                    setShowCallForm(true);
+                  } else {
+                    setShowContactForm(true);
+                  }
+                }
+                
+                return currentMessages; // No change to messages, just checking state
+              });
+            }, 2000);
+          }
       
       return updated;
     });
@@ -366,15 +389,27 @@ export const ChatBot: React.FC = () => {
   const handleSend = async (text: string, optimistic: Message[]) => {
     try {
       const { botReply } = await chatService.sendMessage(text, optimistic);
-      
-      // Add bot message with action and typing animation
-      const botMessage: Message = {
-        ...botReply,
-        isTyping: true
-      };
+
+      if (botReply.action === "choose_contact_method") {
+        setQuickActionPending(true);
+        setWaiting(false);
+        return;                          // no bot bubble added
+      }
+
+      /** Branch B – normal bot message */
+      const botMessage: Message = { ...botReply, isTyping: true };
       setMessages((prev) => [...prev, botMessage]);
-      setWaiting(false);                  // global dots off
-      /* row will self-finalise via TypeWriter.onComplete */
+      setWaiting(false);
+
+      /** Branch C – back-end sent a direct CTA form */
+      if (botReply.action === "contact_form") {
+        // decide overlay by intent
+        if (botReply.intent === "Call Booking") {
+          setShowCallForm(true);
+        } else {
+          setShowContactForm(true);
+        }
+      }
     } catch (error) {
       console.error('Error sending message:', error);
       setWaiting(false);
@@ -452,6 +487,24 @@ export const ChatBot: React.FC = () => {
                   error={speechError}
                   onClose={closeSpeechOverlay}
                   onSend={handleVoiceInput}
+                />
+              )}
+
+
+
+              {showCallForm && (
+                <CallFormOverlay
+                  onClose={() => setShowCallForm(false)}
+                  onSuccess={() => {
+                    setMessages((prev) => [
+                      ...prev,
+                      {
+                        id: Date.now(),
+                        text: "Great! Your call is scheduled – our expert will ring you at the chosen time.",
+                        sender: "bot"
+                      }
+                    ]);
+                  }}
                 />
               )}
 
@@ -649,6 +702,33 @@ export const ChatBot: React.FC = () => {
                       </div>
                     </div>
                   ))}
+                  {quickActionPending && (
+                    <div className="flex justify-start animate-fadeIn">
+                      <div className="w-8 h-8 mt-1 mr-2 flex-shrink-0">
+                        <img
+                          src="/lovable-uploads/indrabot-mascot.png"
+                          alt="Bot"
+                          className="w-full h-full"
+                        />
+                      </div>
+                      <div className="bg-white text-gray-800 border border-gray-200 rounded-2xl rounded-bl-none px-5 py-4 max-w-[85%] sm:max-w-[80%] md:max-w-[75%] shadow-sm">
+                        <div className="h-96">
+                          <QuickActionButtons
+                            onDemo={() => {
+                              setQuickActionPending(false);
+                              setShowContactForm(true);
+                              sendFollowUp("Demo");
+                            }}
+                            onCall={() => {
+                              setQuickActionPending(false);
+                              setShowCallForm(true);
+                              sendFollowUp("Call");
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   {waiting && (
                     <div className="flex justify-start animate-fadeIn">
                       <div className="w-8 h-8 mt-1 mr-2 flex-shrink-0">

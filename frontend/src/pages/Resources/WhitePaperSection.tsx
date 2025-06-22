@@ -959,7 +959,7 @@ const WhitePaperSection: React.FC = () => {
             </div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
               Latest from the{" "}
-              <span className="text-indrasol-blue">Indrasol Whitepapers</span>
+              <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue bg-clip-text text-transparent">Indrasol Whitepapers</span>
             </h2>
             <p className="text-lg text-gray-600">
               Expert perspectives on cybersecurity, AI, and data engineering from

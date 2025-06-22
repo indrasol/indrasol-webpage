@@ -8,9 +8,7 @@ const API_BASE_URL = API_BASE_URL_PROD
 
 export const API_ENDPOINTS = {
   SEND_MESSAGE: `${API_BASE_URL}/message`,
-  // SEND_MESSAGE: `${API_BASE_URL}/mcp/message`,
   GET_CONVERSATION: `${API_BASE_URL}/message/conversation`,
-  EMAIL_CONTACT: `${API_BASE_URL}/email_contact`,
-  NOTIFY_TEAMS: `${API_BASE_URL}/notify_teams`,
   CONTACT: `${API_BASE_URL}/contact`,
+  CALL: `${API_BASE_URL}/call`,
 };

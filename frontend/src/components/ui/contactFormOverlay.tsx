@@ -55,7 +55,7 @@ export const ContactFormOverlay = ({
           <X className="w-5 h-5 text-blue-600" />
         </button>
 
-        <h3 className="text-2xl font-bold text-indigo-700 mb-6">Let's Connect! 😊</h3>
+        <h3 className="text-2xl font-bold text-blue-600 mb-6">Let's Connect! 😊</h3>
 
         <div className="space-y-4">
           {["name", "email", "company"].map((field) => (
