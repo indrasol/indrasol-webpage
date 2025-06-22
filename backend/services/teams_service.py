@@ -3,7 +3,46 @@
 from models.request_models import ContactForm
 import logging
 import requests
-from config.settings import TEAMS_WEBHOOK_URL
+from config.settings import TEAMS_WEBHOOK_URL, TEAMS_WEBHOOK_URL_VAPI
+from models.request_models import CallForm
+
+
+
+async def format_call_message(form: CallForm):
+    try:
+        name = form.name
+        phone = form.phone_number
+        date = form.date
+        time = form.time
+        timezone = form.tz
+        
+        title = "📞 New Vapi Call Scheduled!"
+        
+        # Format the date and time in a readable way
+        formatted_datetime = f"{date} at {time} ({timezone})"
+        
+        text_content = f"""**{title}**
+
+👤 **Name:** {name}
+
+📱 **Phone:** {phone}
+
+🕐 **Scheduled Time:** {formatted_datetime}
+
+---
+
+🎯 **Great news!** Our AI VAPI assistant will handle the initial call with this prospect. Keep an eye out for potential warm leads! 💼"""
+        
+        payload = {
+            "text": text_content
+        }
+        
+        response = requests.post(TEAMS_WEBHOOK_URL_VAPI, json=payload, timeout=10)
+        response.raise_for_status()  # Raises exception for HTTP error codes
+        logging.info(f"Teams call notification sent successfully for {name}")
+    except Exception as exc:
+        logging.error("Failed to send Teams call notification", exc_info=exc)
+        raise  # Re-raise the exception so the caller can handle it
 
 async def format_teams_message(form: ContactForm) -> None:
 

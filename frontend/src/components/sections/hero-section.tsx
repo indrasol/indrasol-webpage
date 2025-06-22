@@ -17,7 +17,7 @@ export function HeroSection() {
           <div className="space-y-6">
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
               <span className="text-gray-900">We Build and Secure </span>
-              <span className="text-indrasol-blue block mt-1">AI, Cloud and Data Systems</span>
+              <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue bg-clip-text text-transparent block mt-1">AI, Cloud and Data Systems</span>
             </h1>
             <p className="text-lg md:text-xl text-gray-700 max-w-2xl">
               From Development to Defense, Indrasol delivers end-to-end solutions for AI/LLM development, cloud-native engineering, data platforms, and security. We help you innovate faster, and safer.
@@ -25,10 +25,10 @@ export function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-4 pt-6">
               <Link
                 to="/contact"
-                className="group px-6 py-3 bg-indrasol-blue text-white rounded-lg hover:bg-indrasol-blue/90 transition-all duration-300 inline-flex items-center justify-center shadow-lg shadow-indrasol-blue/20"
+                className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue hover:shadow-2xl text-white px-8 py-4 rounded-2xl font-semibold shadow-lg shadow-indrasol-blue/25 transition-all duration-300 transform hover:scale-[1.02] group inline-flex items-center justify-center"
               >
                 Request Consultation 
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300 stroke-2" />
+                <ArrowRight className="ml-3 w-6 h-6 group-hover:translate-x-1 transition-transform duration-300" strokeWidth={2} />
               </Link>
               <Link
                 to="/services"
