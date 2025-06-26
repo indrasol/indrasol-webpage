@@ -114,8 +114,8 @@ export function Footer() {
                   <div className="p-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-xl mr-4">
                     <Phone className="h-5 w-5 text-green-400" />
                   </div>
-                  <a href="tel:+15107542001" className="text-white/90 hover:text-white transition-colors font-medium">
-                    +1 (510) 754 2001
+                  <a href="tel:+14244046372" className="text-white/90 hover:text-white transition-colors font-medium">
+                    +1 424 404 6372
                   </a>
                 </div>
                 

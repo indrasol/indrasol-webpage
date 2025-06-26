@@ -7,7 +7,7 @@ const locations = [
     country: "USA",
     address: "6101 Bollinger canyon Rd, suite 335 C, San Ramon, California 94583",
     isHeadquarters: true,
-    phone: "+1 (510) 754 2001",
+    phone: "+1 424 404 6372",
     email: "sales@indrasol.com",
     mapLink: "https://www.google.com/maps/place/6101+Bollinger+Canyon+Rd+suite+335+C,+San+Ramon,+CA+94583,+USA/@37.7597674,-121.9584625,655m/data=!3m2!1e3!4b1!4m6!3m5!1s0x808fed7d76100001:0x80d9a02c84cc6cc1!8m2!3d37.7597632!4d-121.9558876!16s%2Fg%2F11sy74klzp?entry=ttu&g_ep=EgoyMDI1MDYwMS4wIKXMDSoASAFQAw%3D%3Dhttps://maps.google.com/?q=San+Ramon,+California",
     flag: "🇺🇸",
@@ -21,7 +21,7 @@ const locations = [
     country: "Singapore",
     address: "The Adelphi,1 Coleman Street, #05-14, Singapore 179803",
     isHeadquarters: false,
-    phone: " +65 90267032",
+    phone: "+1 424 404 6372",
     email: "sales@indrasol.com",
     mapLink: "https://www.google.com/maps/place/The+Adelphi/@1.2911899,103.8486418,829m/data=!3m3!1e3!4b1!5s0x31da190a6a7e722b:0x356b15a7d5d6fa4c!4m6!3m5!1s0x31da19a728e85ce3:0x33f3d7270d0f9c68!8m2!3d1.2911845!4d103.8512167!16s%2Fg%2F11f_4rltdr?entry=ttu&g_ep=EgoyMDI1MDYwMS4wIKXMDSoASAFQAw%3D%3Dhttps://maps.google.com/?q=Singapore+Business+District",
     flag: "🇸🇬",
@@ -35,7 +35,7 @@ const locations = [
     country: "India",
     address: "814, Manjeera Trinity Corporate, JNTU Road, Kukatpally, Hyderabad, TS, 500 075",
     isHeadquarters: false,
-    phone: " +91 9966636305",
+    phone: "+1 424 404 6372",
     email: "sales@indrasol.com",
     mapLink: "https://www.google.com/maps/place/Indrasol/@17.4893133,78.3901066,936m/data=!3m2!1e3!4b1!4m6!3m5!1s0x3bcb91f27b5c1195:0xc97b9e2d12234798!8m2!3d17.4893082!4d78.3926815!16s%2Fg%2F11fkw7t_9g?entry=ttu&g_ep=EgoyMDI1MDQxNC4xIKXMDSoASAFQAw%3D%3Dhttps://maps.google.com/maps/search/814,+Manjeera+Trinity+Corporate,+JNTU+Road,+Kukatpally,+Hyderabad,+TS,+500+075/@17.4911278,78.3908007,468m/data=!3m2!1e3!4b1?entry=ttu&g_ep=EgoyMDI1MDQxNC4xIKXMDSoASAFQAw%3D%3D",
     flag: "🇮🇳",
@@ -49,7 +49,7 @@ const locations = [
     country: "Mexico",
     address: "Av Independencia 89-7 col. Amomolulco Lerma Estado de Mèxico c.p. 52005",
     isHeadquarters: false,
-    phone: "+1 (510) 754 2001",
+    phone: "+1 424 404 6372",
     email: "sales@indrasol.com",
     mapLink: "https://maps.google.com/?q=Paseo+de+la+Reforma+222+Mexico+City",
     flag: "🇲🇽",
@@ -100,80 +100,7 @@ export function LocationsSection() {
                 className="w-full h-auto transition-transform duration-700 group-hover:scale-105"
               />
               
-              {/* Interactive location markers */}
-              <div className="absolute inset-0">
-                {/* San Ramon - USA */}
-                <div 
-                  className="absolute top-[35%] left-[15%] transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-                  onClick={() => setActiveLocation(0)}
-                  onMouseEnter={() => setHoveredLocation(0)}
-                  onMouseLeave={() => setHoveredLocation(null)}
-                >
-                  <div className={`relative transition-all duration-300 ${hoveredLocation === 0 || activeLocation === 0 ? 'scale-125' : ''}`}>
-                    <div className="w-4 h-4 bg-gradient-to-r from-indrasol-blue to-indrasol-blue rounded-full animate-pulse shadow-lg"></div>
-                    <div className="absolute inset-0 w-4 h-4 bg-indrasol-blue/60 rounded-full animate-ping opacity-75"></div>
-                    {(hoveredLocation === 0 || activeLocation === 0) && (
-                      <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-white px-3 py-1 rounded-lg shadow-xl border text-sm font-semibold text-gray-700 whitespace-nowrap animate-fadeIn">
-                        🇺🇸 San Ramon, USA
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Singapore */}
-                <div 
-                  className="absolute top-[65%] right-[25%] transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-                  onClick={() => setActiveLocation(1)}
-                  onMouseEnter={() => setHoveredLocation(1)}
-                  onMouseLeave={() => setHoveredLocation(null)}
-                >
-                  <div className={`relative transition-all duration-300 ${hoveredLocation === 1 || activeLocation === 1 ? 'scale-125' : ''}`}>
-                    <div className="w-4 h-4 bg-gradient-to-r from-indrasol-blue to-indrasol-blue rounded-full animate-pulse shadow-lg"></div>
-                    <div className="absolute inset-0 w-4 h-4 bg-indrasol-blue/60 rounded-full animate-ping opacity-75"></div>
-                    {(hoveredLocation === 1 || activeLocation === 1) && (
-                      <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-white px-3 py-1 rounded-lg shadow-xl border text-sm font-semibold text-gray-700 whitespace-nowrap animate-fadeIn">
-                        🇸🇬 Singapore
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Hyderabad - India */}
-                <div 
-                  className="absolute top-[55%] right-[35%] transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-                  onClick={() => setActiveLocation(2)}
-                  onMouseEnter={() => setHoveredLocation(2)}
-                  onMouseLeave={() => setHoveredLocation(null)}
-                >
-                  <div className={`relative transition-all duration-300 ${hoveredLocation === 2 || activeLocation === 2 ? 'scale-125' : ''}`}>
-                    <div className="w-4 h-4 bg-gradient-to-r from-indrasol-blue to-indrasol-blue rounded-full animate-pulse shadow-lg"></div>
-                    <div className="absolute inset-0 w-4 h-4 bg-indrasol-blue/60 rounded-full animate-ping opacity-75"></div>
-                    {(hoveredLocation === 2 || activeLocation === 2) && (
-                      <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-white px-3 py-1 rounded-lg shadow-xl border text-sm font-semibold text-gray-700 whitespace-nowrap animate-fadeIn">
-                        🇮🇳 Hyderabad, India
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Mexico */}
-                <div 
-                  className="absolute top-[45%] left-[25%] transform -translate-x-1/2 -translate-y-1/2 cursor-pointer"
-                  onClick={() => setActiveLocation(3)}
-                  onMouseEnter={() => setHoveredLocation(3)}
-                  onMouseLeave={() => setHoveredLocation(null)}
-                >
-                  <div className={`relative transition-all duration-300 ${hoveredLocation === 3 || activeLocation === 3 ? 'scale-125' : ''}`}>
-                    <div className="w-4 h-4 bg-gradient-to-r from-indrasol-blue to-indrasol-blue rounded-full animate-pulse shadow-lg"></div>
-                    <div className="absolute inset-0 w-4 h-4 bg-indrasol-blue/60 rounded-full animate-ping opacity-75"></div>
-                    {(hoveredLocation === 3 || activeLocation === 3) && (
-                      <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-white px-3 py-1 rounded-lg shadow-xl border text-sm font-semibold text-gray-700 whitespace-nowrap animate-fadeIn">
-                        🇲🇽 Mexico City, Mexico
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
+              
             </div>
           </div>
         </div>
