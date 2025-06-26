@@ -296,8 +296,8 @@ export function ContactSection() {
                   </div>
                   <div>
                     <h4 className="text-xl font-bold text-gray-900">Call Us</h4>
-                    <a href="tel:+15107542001" className="text-indrasol-blue hover:text-indrasol-blue/80 transition-colors mt-1 block font-medium">
-                      +1 (510) 754 2001
+                    <a href="tel:+14244046372" className="text-indrasol-blue hover:text-indrasol-blue/80 transition-colors mt-1 block font-medium">
+                      +1 424 404 6372
                     </a>
                   </div>
                 </div>
