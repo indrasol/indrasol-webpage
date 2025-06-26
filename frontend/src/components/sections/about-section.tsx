@@ -269,22 +269,10 @@ export function AboutSection() {
                 }}
               />
               
-              {/* Icon with enhanced animations */}
-              <motion.div 
-                className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-indrasol-blue to-indrasol-lightblue rounded-xl mb-4 relative z-10 shadow-lg"
-                initial={{ scale: 1, rotate: 0 }}
-                whileHover={{ 
-                  scale: 1.2, 
-                  rotate: [0, -10, 10, 0],
-                  boxShadow: "0 20px 40px -12px rgba(59, 130, 246, 0.4)",
-                  transition: { duration: 0.4, ease: "easeOut" }
-                }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-              >
+              {/* Icon without animations */}
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-indrasol-blue to-indrasol-lightblue rounded-xl mb-4 relative z-10 shadow-lg">
                 <stat.icon className="w-8 h-8 text-white" />
-                {/* Shine effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform -skew-x-12"></div>
-              </motion.div>
+              </div>
               
               {/* Number with counter animation */}
               <motion.div 
@@ -448,10 +436,10 @@ export function AboutSection() {
                 <div className="text-center space-y-12">
                   <div className="space-y-6">
                     <div className="inline-block">
-                      <h4 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indrasol-blue via-indrasol-lightblue to-indrasol-darkblue bg-clip-text text-transparent mb-4">
+                      <h4 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indrasol-darkblue via-indrasol-blue to-indrasol-lightblue bg-clip-text text-transparent mb-4">
                         Our Vision
                       </h4>
-                      <div className="w-24 h-1 bg-gradient-to-r from-indrasol-blue to-indrasol-lightblue mx-auto rounded-full"></div>
+                      <div className="w-24 h-1 bg-gradient-to-r from-indrasol-darkblue to-indrasol-lightblue mx-auto rounded-full"></div>
                     </div>
                     
                     <motion.div
@@ -463,9 +451,9 @@ export function AboutSection() {
                       <div className="absolute inset-0 bg-gradient-to-r from-indrasol-blue/5 via-indrasol-lightblue/5 to-indrasol-blue/5 rounded-3xl blur-xl"></div>
                       <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-indrasol-blue/20 shadow-2xl">
                         <p className="text-2xl md:text-3xl leading-relaxed text-gray-800 font-medium max-w-5xl mx-auto">
-                          "To be the <span className="text-indrasol-blue font-bold">trusted partner</span> empowering organizations to 
-                          <span className="text-indrasol-blue font-bold"> innovate, grow, and excel</span> with 
-                          <span className="text-indrasol-blue font-bold">AI, cloud, and security solutions</span>"
+                          "To be the <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-darkblue bg-clip-text text-transparent font-bold">trusted partner</span> empowering organizations to 
+                          <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-darkblue bg-clip-text text-transparent font-bold"> innovate, grow, and excel</span> with 
+                          <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-darkblue bg-clip-text text-transparent font-bold"> AI, cloud, and security solutions</span>"
                         </p>
                       </div>
                     </motion.div>
@@ -494,10 +482,10 @@ export function AboutSection() {
                 <div className="text-center space-y-12">
                   <div className="space-y-6">
                     <div className="inline-block">
-                      <h4 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indrasol-blue via-indrasol-lightblue to-indrasol-darkblue bg-clip-text text-transparent mb-4">
+                      <h4 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indrasol-darkblue via-indrasol-blue to-indrasol-lightblue bg-clip-text text-transparent mb-4">
                         Our Mission
                       </h4>
-                      <div className="w-24 h-1 bg-gradient-to-r from-indrasol-blue to-indrasol-lightblue mx-auto rounded-full"></div>
+                      <div className="w-24 h-1 bg-gradient-to-r from-indrasol-darkblue to-indrasol-lightblue mx-auto rounded-full"></div>
                     </div>
                     
                     <motion.div
@@ -509,10 +497,10 @@ export function AboutSection() {
                       <div className="absolute inset-0 bg-gradient-to-r from-indrasol-blue/5 via-indrasol-lightblue/5 to-indrasol-blue/5 rounded-3xl blur-xl"></div>
                       <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-8 border border-indrasol-blue/20 shadow-2xl">
                         <p className="text-2xl md:text-3xl leading-relaxed text-gray-800 font-medium max-w-5xl mx-auto">
-                          "At Indrasol, we help organizations <span className="text-indrasol-blue font-bold">innovate and grow</span> with 
-                          <span className="text-indrasol-blue font-bold"> AI, cloud, and cybersecurity solutions</span> — combining 
-                          <span className="text-indrasol-blue font-bold"> deep collaboration</span> and a commitment to quality for 
-                          <span className="text-indrasol-blue font-bold">long‑term success</span>"
+                          "At Indrasol, we help organizations <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-darkblue bg-clip-text text-transparent font-bold">innovate and grow</span> with 
+                          <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-darkblue bg-clip-text text-transparent font-bold"> AI, cloud, and cybersecurity solutions</span> — combining 
+                          <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-darkblue bg-clip-text text-transparent font-bold"> deep collaboration</span> and a commitment to quality for 
+                          <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-darkblue bg-clip-text text-transparent font-bold">long‑term success</span>"
                         </p>
                       </div>
                     </motion.div>
@@ -597,13 +585,9 @@ export function AboutSection() {
                         
                         <div className="relative">
                           <div className="flex items-start gap-6">
-                            <motion.div 
-                              className={`p-4 bg-gradient-to-r ${value.color} rounded-2xl group-hover:scale-110 transition-transform duration-300 shadow-lg`}
-                              animate={activeValue === index ? { rotate: [0, 10, -10, 0] } : {}}
-                              transition={{ duration: 0.8 }}
-                            >
+                            <div className={`p-4 bg-gradient-to-r ${value.color} rounded-2xl shadow-lg`}>
                               <value.icon className="w-7 h-7 text-white" />
-                            </motion.div>
+                            </div>
                             
                             <div className="flex-1 space-y-4">
                               <h5 className="text-2xl font-bold text-gray-900 group-hover:text-indrasol-blue transition-colors duration-300">
