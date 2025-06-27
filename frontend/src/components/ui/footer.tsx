@@ -8,14 +8,14 @@ export function Footer() {
       {/* Animated background elements */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-white/5 to-transparent rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-tl from-indrasol-orange/10 to-transparent rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-blue-400/5 to-purple-400/5 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div className="absolute bottom-0 right-0 w-80 h-80 bg-gradient-to-tl from-indrasol-orange/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-blue-400/5 to-purple-400/5 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '2s' }}></div>
       </div>
 
       {/* Grid pattern overlay */}
       <div className="absolute inset-0 opacity-5">
         <div className="grid grid-cols-12 h-full">
-          {Array.from({length: 12}).map((_, i) => (
+          {Array.from({ length: 12 }).map((_, i) => (
             <div key={i} className="border-r border-white/20"></div>
           ))}
         </div>
@@ -29,9 +29,9 @@ export function Footer() {
             <div className="space-y-6">
               <div className="group">
                 <Link to="/" className="flex items-end gap-0 mb-6 w-fit bg-white rounded-xl px-4 py-3 shadow-lg hover:shadow-xl transition-all duration-300">
-                  <img 
-                    src="/favicon.ico" 
-                    alt="Indrasol Logo" 
+                  <img
+                    src="/favicon.ico"
+                    alt="Indrasol Logo"
                     className="h-9 w-9"
                   />
                   <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue bg-clip-text text-transparent font-bold text-4xl tracking-tight leading-none">Indrasol</span>
@@ -45,10 +45,10 @@ export function Footer() {
               <div className="space-y-4">
                 <h4 className="text-lg font-semibold text-white">Connect With Us</h4>
                 <div className="flex space-x-4">
-                  <a 
-                    href="https://www.youtube.com/@IndrasolTech" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+                  <a
+                    href="https://www.youtube.com/@IndrasolTech"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group relative p-3 bg-gradient-to-r from-[#FF0000] to-[#CC0000] rounded-2xl hover:shadow-2xl hover:shadow-red-500/25 transition-all duration-300 transform hover:scale-110 hover:-translate-y-1"
                     aria-label="YouTube"
                   >
@@ -57,29 +57,29 @@ export function Footer() {
                     </svg>
                     <div className="absolute inset-0 bg-gradient-to-r from-white/0 to-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </a>
-                  
-                  <a 
-                    href="https://x.com/theindrasol" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+
+                  <a
+                    href="https://x.com/theindrasol"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group relative p-3 bg-gradient-to-r from-black to-gray-800 rounded-2xl hover:shadow-2xl hover:shadow-gray-800/25 transition-all duration-300 transform hover:scale-110 hover:-translate-y-1"
                     aria-label="X (formerly Twitter)"
                   >
                     <svg className="h-5 w-5 transition-transform duration-300 group-hover:-rotate-12" fill="white" viewBox="0 0 24 24">
-                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                     </svg>
                     <div className="absolute inset-0 bg-gradient-to-r from-white/0 to-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </a>
-                  
-                  <a 
-                    href="https://www.linkedin.com/company/indrasol" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
+
+                  <a
+                    href="https://www.linkedin.com/company/indrasol"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="group relative p-3 bg-gradient-to-r from-[#0077B5] to-[#005885] rounded-2xl hover:shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 transform hover:scale-110 hover:-translate-y-1"
                     aria-label="LinkedIn"
                   >
                     <svg className="h-5 w-5 transition-transform duration-300 group-hover:rotate-12" fill="white" viewBox="0 0 24 24">
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                     </svg>
                     <div className="absolute inset-0 bg-gradient-to-r from-white/0 to-white/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </a>
@@ -98,27 +98,38 @@ export function Footer() {
                 Contact Information
               </h3>
               <div className="space-y-4">
-                <div className="group flex items-start hover:bg-white/5 p-3 rounded-2xl transition-all duration-300">
-                  <div className="p-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-xl mr-4 mt-1">
-                    <MapPin className="h-5 w-5 text-cyan-400" />
+                <a href="https://www.google.com/maps/place/6101+Bollinger+Canyon+Rd+suite+335+C,+San+Ramon,+CA+94583,+USA/@37.7597632,-121.9558876,593m/data=!3m2!1e3!4b1!4m6!3m5!1s0x808fed7d76100001:0x80d9a02c84cc6cc1!8m2!3d37.7597632!4d-121.9558876!16s%2Fg%2F11sy74klzp?entry=ttu&g_ep=EgoyMDI1MDYyMy4yIKXMDSoASAFQAw%3D%3D">
+
+                  <div className="group flex items-start hover:bg-white/5 p-3 rounded-2xl transition-all duration-300">
+                    <div className="p-2 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-xl mr-4 mt-1">
+                      <MapPin className="h-5 w-5 text-cyan-400" />
+                    </div>
+                    <div>
+                      <a href="https://www.google.com/maps/place/6101+Bollinger+Canyon+Rd+suite+335+C,+San+Ramon,+CA+94583,+USA/@37.7597632,-121.9558876,593m/data=!3m2!1e3!4b1!4m6!3m5!1s0x808fed7d76100001:0x80d9a02c84cc6cc1!8m2!3d37.7597632!4d-121.9558876!16s%2Fg%2F11sy74klzp?entry=ttu&g_ep=EgoyMDI1MDYyMy4yIKXMDSoASAFQAw%3D%3D" className="text-white/90 font-medium leading-relaxed">
+                        6101 Bollinger Canyon Rd, Suite 335 C<br />
+                        San Ramon, CA 94583
+                      </a>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-white/90 font-medium leading-relaxed">
-                      6101 Bollinger Canyon Rd, Suite 335 C<br />
-                      San Ramon, CA 94583
-                    </p>
-                  </div>
-                </div>
-                
+                  </a>
+                 
+                 <a href="tel:+14244046372">
                 <div className="group flex items-center hover:bg-white/5 p-3 rounded-2xl transition-all duration-300">
                   <div className="p-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-xl mr-4">
                     <Phone className="h-5 w-5 text-green-400" />
                   </div>
-                  <a href="tel:+14244046372" className="text-white/90 hover:text-white transition-colors font-medium">
+                  <div>
+                   <a href="tel:+14244046372" className="text-white/90 hover:text-white transition-colors font-medium">
                     +1 424 404 6372
                   </a>
+                  </div>
+                  
                 </div>
-                
+                </a>
+
+          
+
+                <a href="mailto:sales@indrasol.com">
                 <div className="group flex items-center hover:bg-white/5 p-3 rounded-2xl transition-all duration-300">
                   <div className="p-2 bg-gradient-to-r from-blue-500/20 to-indigo-500/20 rounded-xl mr-4">
                     <Mail className="h-5 w-5 text-blue-400" />
@@ -127,6 +138,7 @@ export function Footer() {
                     sales@indrasol.com
                   </a>
                 </div>
+                </a>
               </div>
             </div>
           </div>
@@ -143,29 +155,29 @@ export function Footer() {
                   Services
                 </h3>
                 <div className="space-y-3">
-                  <Link 
-                    to="/services/aisolutions" 
+                  <Link
+                    to="/services/aisolutions"
                     className="group flex items-center text-white/80 hover:text-white transition-all duration-300 p-2 rounded-xl hover:bg-white/5"
                   >
                     <ArrowUpRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <span className="group-hover:translate-x-1 transition-transform duration-300">AI Solutions & Security</span>
                   </Link>
-                  <Link 
-                    to="/services/cloud-engineering" 
+                  <Link
+                    to="/services/cloud-engineering"
                     className="group flex items-center text-white/80 hover:text-white transition-all duration-300 p-2 rounded-xl hover:bg-white/5"
                   >
                     <ArrowUpRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <span className="group-hover:translate-x-1 transition-transform duration-300">Cloud Engineering & Security</span>
                   </Link>
-                  <Link 
-                    to="/services/application-security" 
+                  <Link
+                    to="/services/application-security"
                     className="group flex items-center text-white/80 hover:text-white transition-all duration-300 p-2 rounded-xl hover:bg-white/5"
                   >
                     <ArrowUpRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <span className="group-hover:translate-x-1 transition-transform duration-300">Application Security</span>
                   </Link>
-                  <Link 
-                    to="/services/data-engineering" 
+                  <Link
+                    to="/services/data-engineering"
                     className="group flex items-center text-white/80 hover:text-white transition-all duration-300 p-2 rounded-xl hover:bg-white/5"
                   >
                     <ArrowUpRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -183,29 +195,29 @@ export function Footer() {
                   Company
                 </h3>
                 <div className="space-y-3">
-                  <Link 
-                    to="/#about" 
+                  <Link
+                    to="/company"
                     className="group flex items-center text-white/80 hover:text-white transition-all duration-300 p-2 rounded-xl hover:bg-white/5"
                   >
                     <ArrowUpRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <span className="group-hover:translate-x-1 transition-transform duration-300">About Us</span>
                   </Link>
-                  <Link 
-                    to="/#locations" 
+                  <Link
+                    to="/locations"
                     className="group flex items-center text-white/80 hover:text-white transition-all duration-300 p-2 rounded-xl hover:bg-white/5"
                   >
                     <ArrowUpRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <span className="group-hover:translate-x-1 transition-transform duration-300">Global Locations</span>
                   </Link>
-                  <Link 
-                    to="/contact" 
+                  <Link
+                    to="/contact"
                     className="group flex items-center text-white/80 hover:text-white transition-all duration-300 p-2 rounded-xl hover:bg-white/5"
                   >
                     <ArrowUpRight className="h-4 w-4 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <span className="group-hover:translate-x-1 transition-transform duration-300">Contact</span>
                   </Link>
-                  <a 
-                    href="https://www.linkedin.com/company/indrasol/jobs/" 
+                  <a
+                    href="https://www.linkedin.com/company/indrasol/jobs/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group flex items-center text-white/80 hover:text-white transition-all duration-300 p-2 rounded-xl hover:bg-white/5"
@@ -266,7 +278,7 @@ export function Footer() {
                 &copy; {new Date().getFullYear()} Indrasol. All rights reserved.
               </p>
             </div>
-            
+
             <div className="flex flex-wrap justify-center lg:justify-end space-x-6">
               <Link to="/privacy-policy" className="group text-white/60 hover:text-white transition-colors text-sm font-medium flex items-center">
                 <Shield className="h-3 w-3 mr-1 group-hover:scale-110 transition-transform duration-300" />
