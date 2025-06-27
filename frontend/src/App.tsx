@@ -30,6 +30,9 @@ import WhitepaperDetailPage from "./pages/Resources/WhitepaperDetailPage";
 // Import Admin component and Protected Route component
 import Admin from "./pages/Admin";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import CookiePolicy from "./pages/CookiePolicy";
 
 // Create a wrapper component for whitepaper detail page (using the new component)
 function WhitePaperDetailWrapper() {
@@ -82,6 +85,11 @@ const App = () => (
           
           {/* Legacy route for backward compatibility */}
           <Route path="/components/whitepaper/:slug" element={<WhitePaperRouter />} />
+          
+          {/* Legal and Privacy Routes */}
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-of-service" element={<TermsOfService />} />
+          <Route path="/cookie-policy" element={<CookiePolicy />} />
           
           {/* Protected Admin Route */}
           <Route 

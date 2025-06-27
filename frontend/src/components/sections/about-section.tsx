@@ -500,7 +500,7 @@ export function AboutSection() {
                           "At Indrasol, we help organizations <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-darkblue bg-clip-text text-transparent font-bold">innovate and grow</span> with 
                           <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-darkblue bg-clip-text text-transparent font-bold"> AI, cloud, and cybersecurity solutions</span> — combining 
                           <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-darkblue bg-clip-text text-transparent font-bold"> deep collaboration</span> and a commitment to quality for 
-                          <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-darkblue bg-clip-text text-transparent font-bold">long‑term success</span>"
+                          <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-darkblue bg-clip-text text-transparent font-bold"> long‑term success</span>"
                         </p>
                       </div>
                     </motion.div>
