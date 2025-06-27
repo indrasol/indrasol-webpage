@@ -848,9 +848,13 @@ const WhitepaperDetailPage: React.FC = () => {
                 Home
               </Link>
               <ChevronRight className="h-4 w-4 mx-2" />
-              <Link to="/resources" className="hover:text-white transition-colors">
+              {/* <Link to="/resources" className="hover:text-white transition-colors">
                 Resources
-              </Link>
+              </Link> */}
+              <span className="text-gray-300">
+                Resources
+              </span>
+
               <ChevronRight className="h-4 w-4 mx-2" />
               <Link to="/resources/whitepaper" className="hover:text-white transition-colors">
                 Whitepapers
