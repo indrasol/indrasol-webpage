@@ -161,7 +161,7 @@ const clientStats = [
   {
     icon: Building,
     label: "Enterprise Clients",
-    value: "500+",
+    value: "50+",
     color: "from-indrasol-blue to-indrasol-darkblue"
   },
   {
