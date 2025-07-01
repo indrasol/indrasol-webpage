@@ -30,11 +30,11 @@ export function Footer() {
               <div className="group">
                 <Link to="/" className="flex items-end gap-0 mb-6 w-fit bg-white rounded-xl px-4 py-3 shadow-lg hover:shadow-xl transition-all duration-300">
                   <img 
-                    src="/favicon.ico" 
+                    src="/indrasol_logo_high_res.png" 
                     alt="Indrasol Logo" 
                     className="h-9 w-9"
                   />
-                  <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue bg-clip-text text-transparent font-bold text-4xl tracking-tight leading-none">Indrasol</span>
+                  <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue bg-clip-text text-transparent font-bold text-4xl tracking-tight leading-none relative top-[4px]">Indrasol</span>
                 </Link>
                 <p className="text-white/80 text-base leading-relaxed mb-6">
                   A global provider of consulting, implementation, and support services for Oracle solutions, cloud platforms, and data analytics.
@@ -43,7 +43,7 @@ export function Footer() {
 
               {/* Enhanced social media section */}
               <div className="space-y-4">
-                <h4 className="text-lg font-semibold text-white">Connect With Us</h4>
+                <h4 className="text-lg font-semibold text-white">Connect with us</h4>
                 <div className="flex space-x-4">
                   <a 
                     href="https://www.youtube.com/@IndrasolTech" 

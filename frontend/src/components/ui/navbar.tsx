@@ -36,13 +36,13 @@ export function Navbar() {
   return (
     <header className="w-full bg-white/95 shadow-sm fixed top-0 left-0 right-0 z-50 backdrop-blur-sm">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/" className="flex items-end gap-1">
+        <Link to="/" className="flex items-end gap-0">
           <img 
-            src="/favicon.ico" 
+            src="/indrasol_logo_high_res.png" 
             alt="Indrasol Logo" 
             className="h-8 w-8 sm:h-9 sm:w-9"
           />
-          <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue bg-clip-text text-transparent font-bold text-2xl sm:text-4xl tracking-tight leading-none">Indrasol</span>
+          <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue bg-clip-text text-transparent font-bold text-2xl sm:text-4xl tracking-tight leading-none relative top-[6px]">Indrasol</span>
         </Link>
         
         {/* Desktop Navigation */}
