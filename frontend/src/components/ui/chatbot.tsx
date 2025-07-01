@@ -472,7 +472,7 @@ export const ChatBot: React.FC = () => {
       {isOpen && (
         <div className="fixed inset-0 z-50">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-all duration-300" />
-          <div className="absolute bottom-6 right-6 flex flex-row items-end gap-6 z-50">
+          <div className="absolute bottom-4 sm:bottom-6 left-1/2 sm:left-auto sm:right-6 transform -translate-x-1/2 sm:translate-x-0 flex flex-col sm:flex-row items-end gap-0 sm:gap-6 z-50">
             {/* Chat Window */}
             <div
               className="w-[95vw] sm:w-[85vw] md:w-[75vw] lg:w-[65vw] xl:w-[55vw] max-w-4xl bg-white/95 backdrop-blur-md border border-blue-100 shadow-2xl rounded-3xl flex flex-col overflow-hidden transition-all duration-500 ease-in-out blue-chat-window animate-scaleUp relative"
@@ -924,7 +924,7 @@ export const ChatBot: React.FC = () => {
             </div>
             
             {/* Mascot */}
-            <div className="relative flex flex-col items-center animate-scaleUp">
+            <div className="relative flex flex-col items-center animate-scaleUp hidden sm:flex">
               <img
                 src="/lovable-uploads/indrabot-mascot.png"
                 alt="IndraBot"
