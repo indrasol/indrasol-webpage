@@ -33,7 +33,7 @@ const locations = [
   {
     city: "Hyderabad",
     country: "India",
-    address: "814, Manjeera Trinity Corporate, JNTU Road, Kukatpally, Hyderabad, TS, 500 075",
+    address: "814, Manjeera Trinity Corporate, JNTU Road, Kukatpally, Hyderabad, TS, 500075",
     isHeadquarters: false,
     phone: "+1 424 404 6372",
     email: "sales@indrasol.com",
@@ -51,7 +51,7 @@ const locations = [
     isHeadquarters: false,
     phone: "+1 424 404 6372",
     email: "sales@indrasol.com",
-    mapLink: "https://maps.google.com/?q=Paseo+de+la+Reforma+222+Mexico+City",
+    mapLink: "https://www.google.com/maps/place/Av.+Independencia+89-7,+52005+Lerma+de+Villada,+M%C3%A9x.,+Mexico/@19.2846764,-99.4845345,783m/data=!3m2!1e3!4b1!4m5!3m4!1s0x85cdf5b76dac14bf:0x8b72a2b1067e1a3c!8m2!3d19.2846714!4d-99.4819596?entry=ttu&g_ep=EgoyMDI1MDYyMy4wIKXMDSoASAFQAw%3D%3D",
     flag: "🇲🇽",
     img_url: "/locations/Mexico.png",
     timezone: "CST (UTC-6)",

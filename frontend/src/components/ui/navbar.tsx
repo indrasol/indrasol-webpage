@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom"
 import { 
   Menu, 
   X, 
@@ -29,9 +30,29 @@ import { cn } from "@/lib/utils";
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   
+  const location = useLocation();
+const navigate = useNavigate();
+
   const toggleMenu = () => {
+    
+    const handleLogoClick = () => {
+  if (location.pathname === "/") {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  } else {
+    navigate("/");
+  }
+};
+
     setIsMenuOpen(!isMenuOpen);
   };
+
+  function handleLogoClick(event: React.MouseEvent<HTMLDivElement, MouseEvent>): void {
+    if (location.pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      navigate("/");
+    }
+  }
 
   return (
     <header className="w-full bg-white/95 shadow-sm fixed top-0 left-0 right-0 z-50 backdrop-blur-sm">
@@ -89,6 +110,9 @@ function NavLinks({ className, isMobile = false }: { className?: string, isMobil
   const [resourcesDropdownOpen, setResourcesDropdownOpen] = useState(false);
   const [productsDropdownOpen, setProductsDropdownOpen] = useState(false);
   const [aboutDropdownOpen, setAboutDropdownOpen] = useState(false);
+
+  const location = useLocation();
+  const navigate = useNavigate();
   
   const servicesDropdownRef = useRef<HTMLDivElement>(null);
   const resourcesDropdownRef = useRef<HTMLDivElement>(null);
@@ -188,7 +212,20 @@ function NavLinks({ className, isMobile = false }: { className?: string, isMobil
   
   return (
     <>
-      <Link to="/" className={cn(className)}>Home</Link>
+      {/* <Link to="/" className={cn(className)}>Home</Link> */}
+      <span
+  onClick={() => {
+    if (location.pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      navigate("/");
+    }
+  }}
+  className={cn(className, "cursor-pointer")}
+>
+  Home
+</span>
+
       
       {/* Services Dropdown */}
       {isMobile ? (
