@@ -161,7 +161,7 @@ const clientStats = [
   {
     icon: Building,
     label: "Enterprise Clients",
-    value: "500+",
+    value: "50+",
     color: "from-indrasol-blue to-indrasol-darkblue"
   },
   {
@@ -173,7 +173,7 @@ const clientStats = [
   {
     icon: TrendingUp,
     label: "Success Rate",
-    value: "98%",
+    value: "100%",
     color: "from-green-500 to-green-600"
   },
   {
