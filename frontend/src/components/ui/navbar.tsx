@@ -64,7 +64,7 @@ const navigate = useNavigate();
               alt="Indrasol Logo" 
               className="h-8 w-8 sm:h-9 sm:w-9"
             />
-            <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue bg-clip-text text-transparent font-bold text-2xl sm:text-4xl tracking-tight leading-none relative top-[6px]">Indrasol</span>
+            <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue bg-clip-text text-transparent font-bold text-2xl sm:text-4xl tracking-tight leading-none relative top-[2px] sm:top-[6px]">Indrasol</span>
           </div>
         </Link>
           
