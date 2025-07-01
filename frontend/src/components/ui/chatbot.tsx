@@ -536,23 +536,32 @@ export const ChatBot: React.FC = () => {
               )}
 
               {/* Header */}
-              <div className="bg-gradient-to-r from-blue-600 to-blue-400 p-5 text-white flex items-center rounded-t-3xl shadow-md border-b border-blue-200">
+              <div className="bg-gradient-to-r from-blue-600 to-blue-400 p-5 text-white flex items-center justify-between rounded-t-3xl shadow-md border-b border-blue-200">
                 <div className="flex items-center">
                   <img
                     src="/lovable-uploads/indrabot-mascot.png"
                     alt="IndraBot"
                     className="w-8 h-8 mr-0 drop-shadow-sm"
                   />
-                  <div>
+                  <div className="ml-2">
                     <h3 className="font-bold text-lg flex items-center">
                       IndraBot 
-                      <span className="ml-2 flex items-center">
+                      <span className="ml-2 hidden sm:flex items-center">
                         <span className="w-2.5 h-2.5 bg-green-400 rounded-full inline-block mr-1.5"></span>
                         <span className="text-sm font-normal">| Ready to assist you</span>
                       </span>
                     </h3>
+                    {/* Online indicator text stays for desktop; mobile indicator simplified */}
                   </div>
                 </div>
+                {/* Close button visible only on mobile */}
+                <button
+                  className="sm:hidden text-white hover:text-gray-200 focus:outline-none"
+                  onClick={() => setIsOpen(false)}
+                  aria-label="Close chat"
+                >
+                  <X className="w-6 h-6 stroke-2" />
+                </button>
               </div>
               
               {/* Messages */}
