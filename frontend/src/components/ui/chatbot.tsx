@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { X, Send, Mic } from "lucide-react";
 import { chatService } from "../../services/chatService";
+import { bootstrapChat } from "../../services/chatService";
 import { Message as BaseMessage } from "../../types/chat";
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -195,6 +196,14 @@ export const ChatBot: React.FC = () => {
   const [showContactForm, setShowContactForm] = useState(false);
   const [showCallForm, setShowCallForm] = useState(false);
   const [quickActionPending, setQuickActionPending] = useState(false);
+
+  // Ensure privacy consent prompt appears when chat opens
+  useEffect(() => {
+    if (isOpen) {
+      // Kick-off privacy bootstrap (shows consent modal if needed)
+      bootstrapChat().catch((err) => console.error('Privacy bootstrap error', err));
+    }
+  }, [isOpen]);
 
   // Initialize Speech Recognition
   useEffect(() => {
