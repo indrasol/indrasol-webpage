@@ -16,12 +16,40 @@ import { Link, Hash } from 'lucide-react';
 interface EnhancedMarkdownProps {
   content: string;
   className?: string;
+  disableTableOfContents?: boolean;
 }
 
 export const EnhancedMarkdownRenderer: React.FC<EnhancedMarkdownProps> = ({
   content,
-  className = ""
+  className = "",
+  disableTableOfContents = false
 }) => {
+  // Remove table of contents from content if disabled
+  const processedContent = disableTableOfContents ? removeTableOfContents(content) : content;
+
+  // Helper function to remove table of contents from markdown
+  function removeTableOfContents(markdown: string): string {
+    // Remove TOC patterns
+    const tocPatterns = [
+      // Match "## Table of Contents" followed by bullet points with links
+      /^#{1,6}\s*Table of Contents\s*\n((?:\s*[-*+]\s*\[.*?\]\(.*?\)\s*\n)*)/gmi,
+      // Match standalone "Table of Contents" section
+      /^Table of Contents\s*\n((?:\s*[-*+]\s*\[.*?\]\(.*?\)\s*\n)*)/gmi,
+      // Match individual TOC bullet points with links
+      /^\s*[-*+]\s*\[.*?\]\(#.*?\)\s*$/gm,
+    ];
+    
+    let cleanedMarkdown = markdown;
+    tocPatterns.forEach((pattern) => {
+      cleanedMarkdown = cleanedMarkdown.replace(pattern, '');
+    });
+    
+    // Clean up extra newlines left by TOC removal
+    cleanedMarkdown = cleanedMarkdown.replace(/\n\n\n+/g, '\n\n');
+    
+    return cleanedMarkdown;
+  }
+
   // Helper function to generate heading IDs consistently
   const generateHeadingId = (text: string): string => {
     if (typeof text !== 'string') {
@@ -247,7 +275,7 @@ export const EnhancedMarkdownRenderer: React.FC<EnhancedMarkdownProps> = ({
         ]}
         components={components}
       >
-        {content}
+        {processedContent}
       </ReactMarkdown>
     </div>
   );

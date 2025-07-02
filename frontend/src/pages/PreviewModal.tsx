@@ -25,7 +25,7 @@ interface PreviewModalProps {
   open: boolean;
   onClose: () => void;
   document: any;
-  type: 'blog' | 'whitepaper';
+  type: 'blog' | 'whitepaper' | 'case-study';
   onPublish?: () => void;
 }
 
@@ -84,7 +84,7 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
     setIsPublishing(true);
     try {
       const { error } = await supabase
-        .from(type === 'blog' ? 'blogs' : 'whitepapers')
+        .from(type === 'blog' ? 'blogs' : type === 'whitepaper' ? 'whitepapers' : 'case_studies')
         .update({ 
           published: true,
           published_at: new Date().toISOString()
@@ -95,7 +95,7 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
       
       toast({
         title: "Success!",
-        description: `${type === 'blog' ? 'Blog post' : 'Whitepaper'} published successfully.`,
+        description: `${type === 'blog' ? 'Blog post' : type === 'whitepaper' ? 'Whitepaper' : 'Case Study'} published successfully.`,
         variant: "default",
       });
       
@@ -140,7 +140,7 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
         <div className="px-6 py-4 border-b flex items-center justify-between">
           <div className="flex items-center gap-4">
             <h2 className="text-xl font-semibold">
-              Preview {type === 'blog' ? 'Blog Post' : 'Whitepaper'}
+              Preview {type === 'blog' ? 'Blog Post' : type === 'whitepaper' ? 'Whitepaper' : 'Case Study'}
             </h2>
             <span className={`px-2 py-1 text-xs rounded-full ${
               document?.published 
@@ -409,7 +409,7 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
         <div className="px-6 py-4 border-t flex items-center justify-between">
           <div className="flex items-center gap-4">
             <a
-              href={`/${type === 'blog' ? 'Resources/blog' : 'components/whitepaper'}/${document?.slug || ''}`}
+              href={`/${type === 'blog' ? 'Resources/blog' : type === 'whitepaper' ? 'components/whitepaper' : 'case_studies'}/${document?.slug || ''}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-indrasol-blue hover:underline flex items-center"
@@ -440,7 +440,7 @@ export const PreviewModal: React.FC<PreviewModalProps> = ({
                 ) : (
                   <>
                     <Save className="h-4 w-4" />
-                    Publish {type === 'blog' ? 'Blog' : 'Whitepaper'}
+                    Publish {type === 'blog' ? 'Blog' : type === 'whitepaper' ? 'Whitepaper' : 'Case Study'}
                   </>
                 )}
               </button>

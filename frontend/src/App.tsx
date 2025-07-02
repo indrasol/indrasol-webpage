@@ -22,6 +22,7 @@ import BlogDetailPage from "./pages/Resources/BlogDetailPage";
 import WhitePaperSection from "./pages/Resources/WhitePaperSection";
 import WhitePaper1 from "./components/whitepaper/ai-augmented-pen-testing";
 import WhitepaperDetailPage from "./pages/Resources/WhitepaperDetailPage";
+import CaseStudies from "./pages/Resources/CaseStudies";
 
 import Admin from "./pages/Admin";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
@@ -75,6 +76,7 @@ const App = () => (
           <Route path="/Products/Securetrack" element={<SecureTrackProductPage />} />
           <Route path="/Resources/blogs2" element={<BlogPageSection />} />
           <Route path="/Resources/blog/:slug" element={<BlogDetailPage />} />
+          <Route path="/Resources/case-studies" element={<CaseStudies />} />
           <Route path="/Resources/whitepaper" element={<WhitePaperSection />} />
           <Route path="/resources/whitepaper/:slug" element={<WhitePaperRouter />} />
           <Route path="/components/whitepaper/:slug" element={<WhitePaperRouter />} />
