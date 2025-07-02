@@ -33,7 +33,7 @@ const STORAGE_KEYS = {
 // ── 3.  Privacy Configuration ──────────────────────────────────────
 const PRIVACY_CONFIG = {
   DATA_RETENTION_DAYS: 30,
-  CONSENT_VERSION: '1.0',
+  CONSENT_VERSION: '1.1',
   REQUIRED_CONSENT_TYPES: ['functional', 'analytics'] as const
 };
 
@@ -108,8 +108,8 @@ const requestDataConsent = (): Promise<ConsentData | null> => {
         
         <p class="text-xs text-gray-500 mt-4 text-center">
           By accepting, you agree to our 
-          <a href="/privacy-policy" class="text-blue-600 hover:underline">Privacy Policy</a> and 
-          <a href="/terms-of-service" class="text-blue-600 hover:underline">Terms of Service</a>
+          <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Privacy Policy</a> and 
+          <a href="/terms-of-service" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">Terms of Service</a>
         </p>
       </div>
     `;
