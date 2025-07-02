@@ -280,15 +280,15 @@ export function Footer() {
             </div>
 
             <div className="flex flex-wrap justify-center lg:justify-end space-x-6">
-              <Link to="/privacy-policy" className="group text-white/60 hover:text-white transition-colors text-sm font-medium flex items-center">
+              <Link to="/privacy-policy" target="_blank" rel="noopener noreferrer" className="group text-white/60 hover:text-white transition-colors text-sm font-medium flex items-center">
                 <Shield className="h-3 w-3 mr-1 group-hover:scale-110 transition-transform duration-300" />
                 Privacy Policy
               </Link>
-              <Link to="/terms-of-service" className="group text-white/60 hover:text-white transition-colors text-sm font-medium flex items-center">
+              <Link to="/terms-of-service" target="_blank" rel="noopener noreferrer" className="group text-white/60 hover:text-white transition-colors text-sm font-medium flex items-center">
                 <ExternalLink className="h-3 w-3 mr-1 group-hover:scale-110 transition-transform duration-300" />
                 Terms of Service
               </Link>
-              <Link to="/cookie-policy" className="group text-white/60 hover:text-white transition-colors text-sm font-medium flex items-center">
+              <Link to="/cookie-policy" target="_blank" rel="noopener noreferrer" className="group text-white/60 hover:text-white transition-colors text-sm font-medium flex items-center">
                 <Globe className="h-3 w-3 mr-1 group-hover:scale-110 transition-transform duration-300" />
                 Cookie Policy
               </Link>
