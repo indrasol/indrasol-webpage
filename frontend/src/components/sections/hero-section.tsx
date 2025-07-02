@@ -22,6 +22,14 @@ export function HeroSection() {
             <p className="text-lg md:text-xl text-gray-700 max-w-2xl">
               From Development to Defense, Indrasol delivers end-to-end solutions for AI/LLM development, cloud-native engineering, data platforms, and security. We help you innovate faster, and safer.
             </p>
+            {/* Mobile: Show image above certification logos and buttons */}
+            <div className="mb-8 block lg:hidden">
+              <img
+                src="/lovable-uploads/keyoffers.png"
+                alt="Business professionals working on technology solutions"
+                className="w-full max-w-xs mx-auto transition-transform duration-700"
+              />
+            </div>
             <div className="flex flex-col sm:flex-row gap-4 pt-6">
               <Link
                 to="/contact"
@@ -39,7 +47,7 @@ export function HeroSection() {
             </div>
             
             {/* Trusted Partners/Clients Logos Section */}
-            <div className="mt-12">
+            <div className="mt-12 mb-0 lg:mb-12">
               <p className="text-sm text-gray-600 mb-4 font-medium">Certified by:</p>
               <div className="flex flex-wrap gap-8 items-center">
                 <img 
