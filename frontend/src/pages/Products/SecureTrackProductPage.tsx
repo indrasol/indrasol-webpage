@@ -62,32 +62,14 @@ const SecureTrackHero = () => {
               analyzes diagrams, identifies gaps, and provides actionable
               recommendations using AI-driven insights.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 pt-6">
-              <Link
-                to="/contact"
-                className="group px-6 py-3 bg-indrasol-blue text-white rounded-lg hover:bg-indrasol-blue/90 transition-all duration-300 inline-flex items-center justify-center shadow-lg shadow-indrasol-blue/20"
-              >
-                Request Demo
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300 stroke-2" />
-              </Link>
-              {/* <button className="px-6 py-3 border-2 border-indrasol-blue text-indrasol-blue bg-white/80 backdrop-blur-sm rounded-lg hover:bg-indrasol-blue/10 transition-colors inline-flex items-center justify-center">
-                View Demo
-              </button> */}
-            </div>
-          </div>
-          <div className="hidden lg:block">
-            <div className="relative">
-              {/* <div className="bg-white shadow-xl rounded-xl p-6 border border-gray-100"> */}
-              {/* Placeholder for app interface screenshot */}
-              <div className="relative ">
-                <img
-                  src="/product-images/Securetrack.png"
-                  alt="Business professionals working on technology solutions"
-                  className="w-full transition-transform duration-700 hover:scale-105"
-                />
-              </div>
-
-              {/* Stats preview cards */}
+            {/* Product image above Request Demo button on mobile only */}
+            <div className="relative w-full max-w-md mx-auto block lg:hidden">
+              <img
+                src="/product-images/Securetrack.png"
+                alt="Business professionals working on technology solutions"
+                className="w-full transition-transform duration-700 hover:scale-105"
+              />
+              {/* Stats preview cards for mobile */}
               <div className="grid grid-cols-2 gap-4 mt-4">
                 <div className="bg-indrasol-blue/5 rounded-lg p-4">
                   <div className="text-indrasol-blue font-bold text-2xl">
@@ -102,12 +84,43 @@ const SecureTrackHero = () => {
                     76%
                   </div>
                   <div className="text-gray-600 text-sm">Time Saved</div>
-                  {/* </div> */}
                 </div>
-
-                {/* Decorative elements */}
-                {/* <div className="absolute -top-6 -left-6 w-16 h-16 bg-indrasol-blue/10 rounded-xl transform rotate-12 animate-pulse"></div>
-                <div className="absolute -bottom-6 -right-6 w-16 h-16 bg-indrasol-orange/10 rounded-xl transform -rotate-12"></div> */}
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 pt-6">
+              <Link
+                to="/contact"
+                className="group px-6 py-3 bg-indrasol-blue text-white rounded-lg hover:bg-indrasol-blue/90 transition-all duration-300 inline-flex items-center justify-center shadow-lg shadow-indrasol-blue/20"
+              >
+                Request Demo
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300 stroke-2" />
+              </Link>
+            </div>
+          </div>
+          {/* Desktop image on the right, only visible on lg+ */}
+          <div className="hidden lg:block">
+            <div className="relative">
+              <img
+                src="/product-images/Securetrack.png"
+                alt="Business professionals working on technology solutions"
+                className="w-full transition-transform duration-700 hover:scale-105"
+              />
+              {/* Stats preview cards for desktop */}
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                <div className="bg-indrasol-blue/5 rounded-lg p-4">
+                  <div className="text-indrasol-blue font-bold text-2xl">
+                    95%
+                  </div>
+                  <div className="text-gray-600 text-sm">
+                    Threat Detection Rate
+                  </div>
+                </div>
+                <div className="bg-indrasol-orange/5 rounded-lg p-4">
+                  <div className="text-indrasol-orange font-bold text-2xl">
+                    76%
+                  </div>
+                  <div className="text-gray-600 text-sm">Time Saved</div>
+                </div>
               </div>
             </div>
           </div>
@@ -323,11 +336,11 @@ const TechnologySection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="flex flex-col md:flex-row gap-10">
           {/* AI-Driven Analysis */}
-          <div className="relative">
+          <div className="flex-1 flex flex-col relative">
             <div className="absolute inset-0 bg-gradient-to-r from-indrasol-blue/20 to-indrasol-blue/5 rounded-xl transform -rotate-1"></div>
-            <div className="relative bg-white p-8 rounded-xl shadow-lg border border-gray-100 z-10">
+            <div className="relative bg-white p-8 rounded-xl shadow-lg border border-gray-100 z-10 flex flex-col flex-1">
               <div className="p-3 bg-indrasol-blue/10 rounded-full w-14 h-14 flex items-center justify-center mb-6">
                 <Brain className="h-6 w-6 text-indrasol-blue" />
               </div>
@@ -341,9 +354,9 @@ const TechnologySection = () => {
           </div>
 
           {/* Retrieval-Augmented Generation */}
-          <div className="relative mt-10 md:mt-0">
+          <div className="flex-1 flex flex-col relative">
             <div className="absolute inset-0 bg-gradient-to-r from-indrasol-blue/10 to-indrasol-orange/10 rounded-xl"></div>
-            <div className="relative bg-white p-8 rounded-xl shadow-lg border border-gray-100 z-10">
+            <div className="relative bg-white p-8 rounded-xl shadow-lg border border-gray-100 z-10 flex flex-col flex-1">
               <div className="p-3 bg-indrasol-blue/10 rounded-full w-14 h-14 flex items-center justify-center mb-6">
                 <Database className="h-6 w-6 text-indrasol-blue" />
               </div>
@@ -359,9 +372,9 @@ const TechnologySection = () => {
           </div>
 
           {/* Threat Modeling Frameworks */}
-          <div className="relative mt-10 md:mt-5">
+          <div className="flex-1 flex flex-col relative">
             <div className="absolute inset-0 bg-gradient-to-r from-indrasol-orange/15 to-indrasol-orange/5 rounded-xl transform rotate-1"></div>
-            <div className="relative bg-white p-8 rounded-xl shadow-lg border border-gray-100 z-10">
+            <div className="relative bg-white p-8 rounded-xl shadow-lg border border-gray-100 z-10 flex flex-col flex-1">
               <div className="p-3 bg-indrasol-orange/10 rounded-full w-14 h-14 flex items-center justify-center mb-6">
                 <Shield className="h-6 w-6 text-indrasol-orange" />
               </div>

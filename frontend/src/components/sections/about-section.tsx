@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { MapPin, Clock, Award, ChevronRight, Users, Settings, CheckCircle, TrendingUp, Building, Globe, Star, ArrowRight, Eye, Target, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const companyStats = [
   {
@@ -84,6 +85,8 @@ export function AboutSection() {
   const [isPaused, setIsPaused] = useState(false);
   const sectionRef = useRef(null);
   const intervalRef = useRef(null);
+  const location = useLocation();
+  const navigate = useNavigate();
   
   useEffect(() => {
     const handleScroll = () => {
@@ -170,6 +173,22 @@ export function AboutSection() {
         stiffness: 400,
         damping: 20
       }
+    }
+  };
+
+  const handleLearnMoreClick = () => {
+    if (location.pathname === "/") {
+      scrollToSection("contact");
+    } else {
+      navigate("/contact");
+    }
+  };
+
+  const handleViewLocationsClick = () => {
+    if (location.pathname === "/") {
+      scrollToSection("locations");
+    } else {
+      navigate("/locations");
     }
   };
 
@@ -921,7 +940,7 @@ export function AboutSection() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button 
               size="lg" 
-              onClick={() => scrollToSection('contact')}
+              onClick={handleLearnMoreClick}
               className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue hover:shadow-2xl text-white px-8 py-4 rounded-2xl font-semibold shadow-lg shadow-indrasol-blue/25 transition-all duration-300 transform hover:scale-[1.02] group"
             >
               Learn More About Our Journey
@@ -931,7 +950,7 @@ export function AboutSection() {
             <Button 
               variant="outline" 
               size="lg"
-              onClick={() => scrollToSection('locations')}
+              onClick={handleViewLocationsClick}
               className="border-2 border-indrasol-blue text-indrasol-blue hover:bg-indrasol-blue hover:text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300"
             >
               View Our Locations
