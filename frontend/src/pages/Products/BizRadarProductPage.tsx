@@ -60,6 +60,29 @@ const BizRadarHero = () => {
               and analysis of cybersecurity, AI, and data engineering projects
               across government and freelance marketplaces.
             </p>
+            {/* Mobile image above buttons */}
+            <div className="block lg:hidden w-full max-w-md mx-auto mb-4">
+              <img
+                src="/product-images/bizimage.png"
+                alt="Business professionals working on technology solutions"
+                className="w-full transition-transform duration-700 hover:scale-105 rounded-xl shadow-lg"
+              />
+              {/* Stats preview cards for mobile */}
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                <div className="bg-indrasol-blue/5 rounded-lg p-4">
+                  <div className="text-indrasol-blue font-bold text-2xl">
+                    2.5K+
+                  </div>
+                  <div className="text-gray-600 text-sm">Daily Contracts</div>
+                </div>
+                <div className="bg-indrasol-orange/5 rounded-lg p-4">
+                  <div className="text-indrasol-orange font-bold text-2xl">
+                    98%
+                  </div>
+                  <div className="text-gray-600 text-sm">Match Accuracy</div>
+                </div>
+              </div>
+            </div>
             <div className="flex flex-col sm:flex-row gap-4 pt-6">
               <Link
                 to="/contact"
@@ -77,18 +100,14 @@ const BizRadarHero = () => {
               </button> */}
             </div>
           </div>
+          {/* Desktop image on the right */}
           <div className="hidden lg:block">
-            <div className="relative">
-              {/* <div className="bg-white shadow-xl rounded-xl p-6 border border-gray-100"> */}
-              {/* Placeholder for dashboard screenshot */}
-              <div className="relative ">
-                <img
-                  src="/product-images/bizimage.png"
-                  alt="Business professionals working on technology solutions"
-                  className="w-full transition-transform duration-700 hover:scale-105"
-                />
-              </div>
-
+            <div className="relative ">
+              <img
+                src="/product-images/bizimage.png"
+                alt="Business professionals working on technology solutions"
+                className="w-full transition-transform duration-700 hover:scale-105"
+              />
               {/* Stats preview cards */}
               <div className="grid grid-cols-2 gap-4 mt-4">
                 <div className="bg-indrasol-blue/5 rounded-lg p-4">
@@ -104,11 +123,6 @@ const BizRadarHero = () => {
                   <div className="text-gray-600 text-sm">Match Accuracy</div>
                 </div>
               </div>
-
-              {/* Decorative elements */}
-              {/* <div className="absolute -top-6 -left-6 w-16 h-16 bg-indrasol-blue/10 rounded-xl transform rotate-12 animate-pulse"></div>
-                <div className="absolute -bottom-6 -right-6 w-16 h-16 bg-indrasol-orange/10 rounded-xl transform -rotate-12"></div> */}
-              {/* </div> */}
             </div>
           </div>
         </div>
@@ -356,9 +370,9 @@ const TechnologySection = () => {
           </div>
 
           {/* LLM-Powered Search */}
-          <div className="relative mt-10 md:mt-5">
+          <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-r from-indrasol-orange/15 to-indrasol-orange/5 rounded-xl transform rotate-1"></div>
-            <div className="relative bg-white p-8 rounded-xl shadow-lg border border-gray-100 z-10">
+            <div className="relative bg-white p-8 rounded-xl shadow-lg border border-gray-100 z-10 h-full">
               <div className="p-3 bg-indrasol-orange/10 rounded-full w-14 h-14 flex items-center justify-center mb-6">
                 <Search className="h-6 w-6 text-indrasol-orange" />
               </div>

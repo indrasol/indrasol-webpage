@@ -134,16 +134,18 @@ export function TestimonialsSection() {
       className="relative py-20 md:py-32 overflow-hidden bg-gradient-to-br from-slate-50 via-white to-blue-50/30"
     >
       {/* Enhanced background elements with animations */}
-      <div className="absolute inset-0">
-        <div className="absolute top-10 right-10 w-96 h-96 bg-gradient-to-br from-indrasol-blue/10 to-indrasol-blue/5 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-10 left-10 w-80 h-80 bg-gradient-to-tr from-indrasol-orange/10 to-yellow-500/10 rounded-full blur-3xl animate-pulse" style={{animationDelay: '1s'}}></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-r from-indrasol-blue/5 to-blue-500/5 rounded-full blur-2xl animate-pulse" style={{animationDelay: '2s'}}></div>
-        
-        {/* Floating geometric shapes */}
-        <div className="absolute top-20 left-20 w-8 h-8 bg-indrasol-blue/20 rounded-lg animate-float-gentle"></div>
-        <div className="absolute top-40 right-32 w-6 h-6 bg-indrasol-orange/30 rounded-full animate-float-gentle" style={{animationDelay: '1s'}}></div>
-        <div className="absolute bottom-32 right-20 w-10 h-10 bg-blue-500/20 rounded-full animate-float-gentle" style={{animationDelay: '2s'}}></div>
-        <div className="absolute bottom-20 left-32 w-7 h-7 bg-indrasol-blue/25 rounded-lg animate-float-gentle" style={{animationDelay: '3s'}}></div>
+      <div className="absolute inset-0 z-0">
+        {/* Large blue circle - hide on mobile */}
+        <div className="absolute top-10 right-10 w-32 h-32 md:w-96 md:h-96 bg-gradient-to-br from-indrasol-blue/10 to-indrasol-blue/5 rounded-full blur-2xl md:blur-3xl animate-pulse hidden md:block"></div>
+        {/* Large orange circle - hide on mobile */}
+        <div className="absolute bottom-10 left-10 w-24 h-24 md:w-80 md:h-80 bg-gradient-to-tr from-indrasol-orange/10 to-yellow-500/10 rounded-full blur-xl md:blur-3xl animate-pulse hidden md:block" style={{animationDelay: '1s'}}></div>
+        {/* Center blue circle - hide on mobile */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-20 h-20 md:w-64 md:h-64 bg-gradient-to-r from-indrasol-blue/5 to-blue-500/5 rounded-full blur-lg md:blur-2xl animate-pulse hidden md:block" style={{animationDelay: '2s'}}></div>
+        {/* Floating geometric shapes - hide on mobile */}
+        <div className="absolute top-20 left-20 w-4 h-4 md:w-8 md:h-8 bg-indrasol-blue/20 rounded-lg animate-float-gentle hidden md:block"></div>
+        <div className="absolute top-40 right-32 w-3 h-3 md:w-6 md:h-6 bg-indrasol-orange/30 rounded-full animate-float-gentle hidden md:block" style={{animationDelay: '1s'}}></div>
+        <div className="absolute bottom-32 right-20 w-5 h-5 md:w-10 md:h-10 bg-blue-500/20 rounded-full animate-float-gentle hidden md:block" style={{animationDelay: '2s'}}></div>
+        <div className="absolute bottom-20 left-32 w-3.5 h-3.5 md:w-7 md:h-7 bg-indrasol-blue/25 rounded-lg animate-float-gentle hidden md:block" style={{animationDelay: '3s'}}></div>
       </div>
       
       <div className="container mx-auto px-4 relative z-10">
@@ -190,15 +192,21 @@ export function TestimonialsSection() {
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
-          {/* Enhanced navigation buttons */}
+          {/* Desktop navigation arrows (outside card, only md and up) */}
           <button 
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-xl border border-gray-100 hover:bg-indrasol-blue hover:text-white hover:scale-110 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indrasol-blue/40 hidden lg:block group"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-xl border border-gray-100 hover:bg-indrasol-blue hover:text-white hover:scale-110 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indrasol-blue/40 hidden md:block group"
             onClick={prevSlide}
             aria-label="Previous testimonial"
           >
             <ChevronLeft className="h-6 w-6 group-hover:animate-bounce-x" />
           </button>
-
+          <button 
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-xl border border-gray-100 hover:bg-indrasol-blue hover:text-white hover:scale-110 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indrasol-blue/40 hidden md:block group"
+            onClick={nextSlide}
+            aria-label="Next testimonial"
+          >
+            <ChevronRight className="h-6 w-6 group-hover:animate-bounce-x" />
+          </button>
           {/* Main testimonial display */}
           <div className="overflow-hidden rounded-3xl">
             <div 
@@ -210,9 +218,24 @@ export function TestimonialsSection() {
                   key={testimonial.id} 
                   className="w-full flex-shrink-0 px-4 md:px-8"
                 >
-                                     <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl p-8 md:p-12 shadow-2xl border border-gray-100 group hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2">
-                     {/* Subtle gradient border effect */}
-                     <div className="absolute inset-0 bg-gradient-to-r from-indrasol-blue/10 to-indrasol-blue/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+                  <div className="relative bg-white/95 backdrop-blur-sm rounded-3xl p-8 md:p-12 px-12 md:px-12 min-h-[350px] shadow-2xl border border-gray-100 group hover:shadow-3xl transition-all duration-500 transform hover:-translate-y-2">
+                    {/* Mobile navigation arrows (inside card, only below md, vertically centered) */}
+                    <button 
+                      className="absolute left-0 top-52 z-30 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg border border-gray-100 hover:bg-indrasol-blue hover:text-white hover:scale-110 transition-all duration-300 group flex-shrink-0 md:hidden"
+                      onClick={prevSlide}
+                      aria-label="Previous testimonial"
+                    >
+                      <ChevronLeft className="h-5 w-5 group-hover:animate-bounce-x" />
+                    </button>
+                    <button 
+                      className="absolute right-0 top-52 z-30 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg border border-gray-100 hover:bg-indrasol-blue hover:text-white hover:scale-110 transition-all duration-300 group flex-shrink-0 md:hidden"
+                      onClick={nextSlide}
+                      aria-label="Next testimonial"
+                    >
+                      <ChevronRight className="h-5 w-5 group-hover:animate-bounce-x" />
+                    </button>
+                    {/* Subtle gradient border effect */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-indrasol-blue/10 to-indrasol-blue/5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
                     
                     {/* Enhanced quote icon with animation */}
                     <div className="absolute top-8 right-8 text-indrasol-blue/10 group-hover:text-indrasol-blue/20 transition-colors duration-500">
@@ -279,47 +302,23 @@ export function TestimonialsSection() {
             </div>
           </div>
 
-          {/* Enhanced next button */}
-          <button 
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-xl border border-gray-100 hover:bg-indrasol-blue hover:text-white hover:scale-110 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indrasol-blue/40 hidden lg:block group"
-            onClick={nextSlide}
-            aria-label="Next testimonial"
-          >
-            <ChevronRight className="h-6 w-6 group-hover:animate-bounce-x" />
-          </button>
-          
-          {/* Enhanced indicators */}
-          <div className="flex justify-center mt-12 space-x-3">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                className={`transition-all duration-500 focus:outline-none rounded-full ${
-                  index === activeIndex 
-                    ? "bg-gradient-to-r from-indrasol-blue to-indrasol-blue w-12 h-4 shadow-lg" 
-                    : "bg-gray-300 hover:bg-indrasol-blue/50 w-4 h-4 hover:scale-125"
-                }`}
-                onClick={() => goToSlide(index)}
-                aria-label={`Go to testimonial ${index + 1}`}
-              />
-            ))}
-          </div>
-          
-          {/* Enhanced mobile navigation */}
-          <div className="flex justify-center mt-8 space-x-4 lg:hidden">
-            <button 
-              className="bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg border border-gray-100 hover:bg-indrasol-blue hover:text-white hover:scale-110 transition-all duration-300 group"
-              onClick={prevSlide}
-              aria-label="Previous testimonial"
-            >
-              <ChevronLeft className="h-5 w-5 group-hover:animate-bounce-x" />
-            </button>
-            <button 
-              className="bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg border border-gray-100 hover:bg-indrasol-blue hover:text-white hover:scale-110 transition-all duration-300 group"
-              onClick={nextSlide}
-              aria-label="Next testimonial"
-            >
-              <ChevronRight className="h-5 w-5 group-hover:animate-bounce-x" />
-            </button>
+          {/* Unified navigation and indicators row for all breakpoints */}
+          <div className="relative flex justify-center items-center mt-12">
+            {/* Indicators */}
+            <div className="flex space-x-3">
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
+                  className={`transition-all duration-500 focus:outline-none rounded-full ${
+                    index === activeIndex 
+                      ? "bg-gradient-to-r from-indrasol-blue to-indrasol-blue w-12 h-4 shadow-lg" 
+                      : "bg-gray-300 hover:bg-indrasol-blue/50 w-4 h-4 hover:scale-125"
+                  }`}
+                  onClick={() => goToSlide(index)}
+                  aria-label={`Go to testimonial ${index + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
 
