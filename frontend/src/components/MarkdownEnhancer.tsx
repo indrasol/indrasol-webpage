@@ -58,6 +58,12 @@ export interface DocumentSection {
      */
     enhanceMarkdown(markdown: string): string {
       let processed = markdown
+        // Remove HTML anchor tags that come from DOCX conversion
+        .replace(/<a\s+id="[^"]*"[^>]*><\/a>/g, '')
+        .replace(/<a\s+id="[^"]*"[^>]*>\s*<\/a>/g, '')
+        .replace(/<a[^>]*><\/a>/g, '')
+        // Remove any remaining HTML tags that might interfere
+        .replace(/<[^>]+>/g, '')
         // Fix multiple blank lines
         .replace(/\n{3,}/g, '\n\n')
         // Fix list formatting
@@ -112,7 +118,16 @@ export interface DocumentSection {
         const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
         if (headingMatch) {
           const level = headingMatch[1].length;
-          const text = headingMatch[2].trim();
+          let text = headingMatch[2].trim();
+          
+          // Clean any remaining HTML tags from heading text
+          text = text.replace(/<[^>]+>/g, '');
+          
+          // Skip empty headings after cleaning
+          if (!text.trim()) {
+            return;
+          }
+          
           const id = this.generateHeadingId(text);
           
           headings.push({ level, text, id });
@@ -173,6 +188,7 @@ export interface DocumentSection {
         // Handle React elements by extracting text content
         const textContent = String(text);
         return textContent
+          .replace(/<[^>]+>/g, '') // Remove HTML tags
           .toLowerCase()
           .replace(/[^\w\s-]/g, '')
           .replace(/\s+/g, '-')
@@ -180,6 +196,7 @@ export interface DocumentSection {
           .substring(0, 50);
       }
       return text
+        .replace(/<[^>]+>/g, '') // Remove HTML tags
         .toLowerCase()
         .replace(/[^\w\s-]/g, '')
         .replace(/\s+/g, '-')
