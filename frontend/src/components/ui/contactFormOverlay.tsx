@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { contactService } from "../../services/contactService";
 import { bootstrapChat } from "../../services/chatService"; 
@@ -17,7 +17,16 @@ export const ContactFormOverlay = ({
   const [form, setForm] = useState({ name: "", email: "", company: "", message: "" });
   const [sending, setSending] = useState(false);
   const sendingRef = useRef(false);
-  const { userId } = bootstrapChat();    
+
+  // Hold userId once resolved
+  const [userId, setUserId] = useState<string>("");
+
+  useEffect(() => {
+    // Resolve userId once when the overlay mounts
+    bootstrapChat()
+      .then(({ userId }) => setUserId(userId))
+      .catch((err) => console.error("bootstrapChat error", err));
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -37,6 +46,7 @@ export const ContactFormOverlay = ({
         onSubmitStart();
       }
       
+      if (!userId) throw new Error("User ID not ready");
       await contactService.submit({ ...form, user_id: userId });           // POST → /contact  & /notify_teams
       onSuccess();                                 // push "thanks" message
     } catch (err) {

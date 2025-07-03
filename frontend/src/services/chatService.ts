@@ -45,6 +45,25 @@ type ConsentData = {
   granted: boolean;
 };
 
+// ── 2b. One-shot gate for the consent modal ─────────────────────────
+let consentPromise: Promise<ConsentData | null> | null = null;
+
+/** Should we show the consent modal (first time / version change / expired) */
+const shouldAskConsent = (): boolean => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEYS.CONSENT);
+    if (!raw) return true; // never asked before
+    const saved: ConsentData = JSON.parse(raw);
+    // re-ask when version bumps or data expired irrespective of granted flag
+    return (
+      saved.version !== PRIVACY_CONFIG.CONSENT_VERSION ||
+      isDataExpired(saved.timestamp)
+    );
+  } catch {
+    return true; // corrupted record → ask again
+  }
+};
+
 /** Helper : generate stable UUID (crypto if available) */
 const genUUID = () =>
   typeof crypto !== 'undefined' && crypto.randomUUID
@@ -176,35 +195,52 @@ const isConsentValid = (): boolean => {
 export const bootstrapChat = async (): Promise<{ userId: string; history: Message[] }> => {
   // Clean expired data first
   cleanExpiredData();
-  
-  // Check if we have valid consent
-  if (!isConsentValid()) {
-    const consent = await requestDataConsent();
-    
-    if (!consent) {
-      // User declined - return session-only data
-      return { 
-        userId: genUUID(), 
-        history: [] 
-      };
+
+  // ── Ask for consent if required ────────────────────────────────
+  if (shouldAskConsent()) {
+    if (!consentPromise) {
+      consentPromise = requestDataConsent().finally(() => {
+        consentPromise = null; // clear lock after resolution
+      });
     }
-    
-    // Store consent
-    localStorage.setItem(STORAGE_KEYS.CONSENT, JSON.stringify(consent));
-    localStorage.setItem(STORAGE_KEYS.TIMESTAMP, consent.timestamp);
+    const consent = await consentPromise;
+
+    // Persist answer (even when declined)
+    const stored: ConsentData = consent ?? {
+      version: PRIVACY_CONFIG.CONSENT_VERSION,
+      timestamp: new Date().toISOString(),
+      functional: false,
+      analytics: false,
+      granted: false
+    };
+    try {
+      localStorage.setItem(STORAGE_KEYS.CONSENT, JSON.stringify(stored));
+      localStorage.setItem(STORAGE_KEYS.TIMESTAMP, stored.timestamp);
+    } catch {/* ignore quota errors */}
   }
-  
-  // User has valid consent - proceed with normal flow
-  let userId = localStorage.getItem(STORAGE_KEYS.USER_ID);
+
+  // Determine whether we can use persistent storage
+  const persistentAllowed = isConsentValid();
+
+  // Retrieve or create userId
+  let userId = persistentAllowed ? localStorage.getItem(STORAGE_KEYS.USER_ID) : null;
   if (!userId) {
     userId = genUUID();
-    localStorage.setItem(STORAGE_KEYS.USER_ID, userId);
-    localStorage.setItem(STORAGE_KEYS.TIMESTAMP, new Date().toISOString());
+    if (persistentAllowed) {
+      try {
+        localStorage.setItem(STORAGE_KEYS.USER_ID, userId);
+        localStorage.setItem(STORAGE_KEYS.TIMESTAMP, new Date().toISOString());
+      } catch {/* ignore */}
+    }
   }
-  
-  const historyJSON = localStorage.getItem(STORAGE_KEYS.HISTORY);
-  const history: Message[] = historyJSON ? JSON.parse(historyJSON) : [];
-  
+
+  // Load history when allowed
+  let history: Message[] = [];
+  if (persistentAllowed) {
+    const historyJSON = localStorage.getItem(STORAGE_KEYS.HISTORY);
+    history = historyJSON ? JSON.parse(historyJSON) : [];
+  }
+
   return { userId, history };
 };
 
