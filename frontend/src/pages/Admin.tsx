@@ -34,7 +34,8 @@ import {
   Download,
   XCircle,
   Link,
-  NotebookPen
+  NotebookPen,
+  BookOpen
 } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
@@ -86,9 +87,30 @@ const Admin = () => {
   const [canPublishWp, setCanPublishWp] = useState(false);
   const [previewingWp, setPreviewingWp] = useState(false);
 
+  // Case Studies state
+  const [csFile, setCsFile] = useState<File | null>(null);
+  const [csUploading, setCsUploading] = useState(false);
+  const [csTitle, setCsTitle] = useState('');
+  const [csAuthor, setCsAuthor] = useState('');
+  const [csAuthor_desc, setCsAuthor_desc] = useState('');
+  const [csAuthor_profile_url, setCsAuthor_profile_url] = useState('');
+  const [csCategory, setCsCategory] = useState('');
+  const [caseStudies, setCaseStudies] = useState<any[]>([]);
+  const [loadingCaseStudies, setLoadingCaseStudies] = useState(false);
+  const [selectedCaseStudy, setSelectedCaseStudy] = useState<any>(null);
+  const [confirmDeleteCaseStudyDialog, setConfirmDeleteCaseStudyDialog] = useState(false);
+  const [csSearchQuery, setCsSearchQuery] = useState('');
+  const [csProcessing, setCsProcessing] = useState(false);
+
+  // Upload workflow state for case studies
+  const [uploadedCsPath, setUploadedCsPath] = useState<string>('');
+  const [canPreviewCs, setCanPreviewCs] = useState(false);
+  const [canPublishCs, setCanPublishCs] = useState(false);
+  const [previewingCs, setPreviewingCs] = useState(false);
+
   // ADD THESE NEW STATE VARIABLES FOR PREVIEW
   const [previewDocument, setPreviewDocument] = useState<any>(null);
-  const [previewType, setPreviewType] = useState<'blog' | 'whitepaper'>('blog');
+  const [previewType, setPreviewType] = useState<'blog' | 'whitepaper' | 'case-study'>('blog');
   const [showPreview, setShowPreview] = useState(false);
 
   useEffect(() => {
@@ -961,12 +983,20 @@ const Admin = () => {
     setShowPreview(true);
   };
 
+  const handlePreviewCaseStudy = (caseStudy: any) => {
+    setPreviewDocument(caseStudy);
+    setPreviewType('case-study');
+    setShowPreview(true);
+  };
+
   const handlePublishFromPreview = () => {
     // Refresh the appropriate list after publishing
     if (previewType === 'blog') {
       refreshBlogs();
-    } else {
+    } else if (previewType === 'whitepaper') {
       refreshWhitepapers();
+    } else if (previewType === 'case-study') {
+      refreshCaseStudies();
     }
   };
 
@@ -1003,6 +1033,23 @@ const Admin = () => {
     }
   };
 
+  const resetCaseStudyForm = () => {
+    setCsFile(null);
+    setCsTitle('');
+    setCsAuthor('');
+    setCsAuthor_desc('');
+    setCsAuthor_profile_url('');
+    setCsCategory('');
+    setUploadedCsPath('');
+    setCanPreviewCs(false);
+    setCanPublishCs(false);
+
+    const fileInput = document.getElementById('cs-file-upload') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  };
+
   const testSupabaseConnection = async () => {
     try {
       console.log("=== COMPREHENSIVE SUPABASE CONNECTION TEST ===");
@@ -1030,7 +1077,7 @@ const Admin = () => {
           console.log("⚠️ No buckets visible - testing direct bucket access...");
 
           // Test direct bucket access
-          const requiredBuckets = ['blogs', 'whitepapers'];
+          const requiredBuckets = ['blogs', 'whitepapers', 'case-studies'];
           for (const bucketName of requiredBuckets) {
             try {
               const { data: listData, error: listError } = await supabase.storage
@@ -1048,7 +1095,7 @@ const Admin = () => {
           }
         } else {
           // Check specific buckets normally
-          const requiredBuckets = ['blogs', 'whitepapers'];
+          const requiredBuckets = ['blogs', 'whitepapers', 'case-studies'];
           requiredBuckets.forEach(bucketName => {
             const exists = storageData?.find(b => b.name === bucketName);
             console.log(`${exists ? '✅' : '❌'} ${bucketName} bucket:`, exists ? 'Found' : 'NOT FOUND');
@@ -1056,13 +1103,30 @@ const Admin = () => {
         }
       }
 
-      // 3. Test Database
-      console.log("\n3. Testing Database Access...");
-      const { data: dbData, error: dbError } = await supabase.from('blogs').select('count').limit(1);
-      if (dbError) {
-        console.error("❌ Database error:", dbError);
-      } else {
-        console.log("✅ Database access: Working");
+      // 3. Test Database Tables
+      console.log("\n3. Testing Database Tables...");
+      const tables = ['blogs', 'whitepapers', 'case_studies'];
+      
+      for (const tableName of tables) {
+        try {
+          const { data, error } = await supabase.from(tableName).select('*').limit(1);
+          if (error) {
+            console.error(`❌ ${tableName} table: ${error.message}`);
+          } else {
+            console.log(`✅ ${tableName} table: Accessible (${data?.length || 0} records)`);
+            
+            // Try to get column info by attempting to select with a non-existent column
+            if (tableName === 'case_studies') {
+              try {
+                await supabase.from(tableName).select('csTitle, title, csAuthor, author, csCategory, category').limit(1);
+              } catch (colError: any) {
+                console.log(`📋 ${tableName} columns info: Some columns might not exist`);
+              }
+            }
+          }
+        } catch (err: any) {
+          console.error(`❌ ${tableName} table: Error - ${err.message}`);
+        }
       }
 
       // 4. Test Storage Upload (small test file)
@@ -1108,7 +1172,6 @@ const Admin = () => {
       const issues = [];
       if (authError) issues.push("Authentication");
       if (storageError) issues.push("Storage Access");
-      if (dbError) issues.push("Database");
       if (functionsError) issues.push("Edge Functions");
 
       toast({
@@ -1198,6 +1261,41 @@ const Admin = () => {
     };
 
     fetchWhitepapers();
+  }, []);
+
+  useEffect(() => {
+    const fetchCaseStudies = async () => {
+      try {
+        setLoadingCaseStudies(true);
+        const { data, error } = await supabase
+          .from('case_studies')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error("Error fetching case studies:", error);
+          toast({
+            title: "Error",
+            description: "Failed to load case studies",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        setCaseStudies(data || []);
+      } catch (err) {
+        console.error("Failed to fetch case studies:", err);
+        toast({
+          title: "Error",
+          description: "An unexpected error occurred",
+          variant: "destructive",
+        });
+      } finally {
+        setLoadingCaseStudies(false);
+      }
+    };
+
+    fetchCaseStudies();
   }, []);
 
   const handleWpFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -1371,6 +1469,43 @@ const Admin = () => {
     }
   };
 
+  const refreshCaseStudies = async () => {
+    try {
+      setLoadingCaseStudies(true);
+      const { data, error } = await supabase
+        .from('case_studies')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error("Error refreshing case studies:", error);
+        toast({
+          title: "Error",
+          description: "Failed to refresh case studies",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setCaseStudies(data || []);
+
+      toast({
+        title: "Refreshed",
+        description: "Case studies list updated",
+        variant: "default",
+      });
+    } catch (err) {
+      console.error("Failed to refresh case studies:", err);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingCaseStudies(false);
+    }
+  };
+
   const filteredBlogs = blogs.filter(blog =>
     (blog.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
     (blog.author || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -1383,6 +1518,12 @@ const Admin = () => {
     (wp.wpCategory || wp.category || '').toLowerCase().includes(wpSearchQuery.toLowerCase())
   );
 
+  const filteredCaseStudies = caseStudies.filter(cs =>
+    (cs.cstitle || cs.csTitle || cs.title || '').toLowerCase().includes(csSearchQuery.toLowerCase()) ||
+    (cs.csAuthor || cs.author || '').toLowerCase().includes(csSearchQuery.toLowerCase()) ||
+    (cs.cscategory || cs.csCategory || cs.category || '').toLowerCase().includes(csSearchQuery.toLowerCase())
+  );
+
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -1390,6 +1531,403 @@ const Admin = () => {
       month: 'long',
       day: 'numeric'
     });
+  };
+
+  // Case Studies Upload Function
+  const handleCsUpload = async () => {
+    if (!csFile || !csTitle || !csCategory) {
+      toast({
+        title: "Missing Information",
+        description: "Please provide title, category and a file",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!csFile.name.match(/\.docx$/)) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a Word document (.docx)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setCsUploading(true);
+
+    try {
+      // Check if case-studies bucket exists
+      console.log("Checking case studies bucket access...");
+      const { data: buckets, error: bucketError } = await supabase.storage.listBuckets();
+
+      if (bucketError) {
+        console.error("Bucket access error:", bucketError);
+        throw new Error(`Storage access issue: ${bucketError.message}`);
+      }
+
+      const csBucket = buckets?.find(bucket => bucket.name === 'case-studies');
+      if (!csBucket) {
+        console.error("Available buckets:", buckets?.map(b => b.name));
+        throw new Error("Case Studies bucket not found. Please contact administrator.");
+      }
+
+      console.log("Case Studies bucket access confirmed:", csBucket);
+
+      const slug = slugify(csTitle);
+      const sanitizedFileName = csFile.name.replace(/[^a-zA-Z0-9.-]/g, '_');
+      const originalPath = `${slug}/${sanitizedFileName}`;
+
+      console.log("Uploading case study to path:", originalPath);
+      console.log("File size:", csFile.size, "bytes");
+
+      // Try upload with minimal options first
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('case-studies')
+        .upload(originalPath, csFile, {
+          upsert: true
+        });
+
+      if (uploadError) {
+        console.error("Detailed case study upload error:", {
+          error: uploadError,
+          path: originalPath,
+          fileSize: csFile.size,
+          fileName: csFile.name
+        });
+
+        // Try alternative approach if database error
+        if (uploadError.message?.includes('DatabaseError') || uploadError.message?.includes('unrecognized configuration')) {
+          console.log("Attempting alternative case study upload method...");
+
+          // Try with different path structure
+          const simplePath = `cs-${slug}-${Date.now()}.docx`;
+          const { data: retryData, error: retryError } = await supabase.storage
+            .from('case-studies')
+            .upload(simplePath, csFile);
+
+          if (retryError) {
+            throw new Error(`Case Study upload failed (retry): ${retryError.message}. This appears to be a Supabase configuration issue.`);
+          }
+
+          console.log("Alternative case study upload successful:", retryData);
+          setUploadedCsPath(simplePath);
+        } else {
+          throw new Error(`Upload failed: ${uploadError.message}`);
+        }
+      } else {
+        console.log("Case Study uploaded successfully:", uploadData);
+        setUploadedCsPath(originalPath);
+      }
+
+      setCanPreviewCs(true);
+      setCanPublishCs(true);
+
+      toast({
+        title: "Case Study Uploaded Successfully!",
+        description: "Your case study is ready for preview. Click Preview to see how it will look.",
+        variant: "default",
+      });
+
+    } catch (error: any) {
+      console.error("Complete case study upload error:", error);
+
+      let errorMessage = error.message || "An error occurred during upload";
+
+      // Provide specific guidance for common issues
+      if (error.message?.includes('DatabaseError') || error.message?.includes('unrecognized configuration')) {
+        errorMessage = "Supabase configuration issue detected. Please check your project settings or contact support.";
+      } else if (error.message?.includes('not found')) {
+        errorMessage = "Storage bucket not found. Please verify your Supabase project setup.";
+      } else if (error.message?.includes('permission')) {
+        errorMessage = "Permission denied. Please check your storage policies.";
+      }
+
+      toast({
+        title: "Upload Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+    } finally {
+      setCsUploading(false);
+    }
+  };
+
+  // Case Study Publish Function
+  const handleCsPublish = async () => {
+    if (!uploadedCsPath) {
+      toast({
+        title: "No File Uploaded",
+        description: "Please upload a file first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setCsProcessing(true);
+
+    try {
+      console.log("Step 1: Processing document with edge function...");
+      const slug = slugify(csTitle);
+
+      // Step 1: Call edge function to process and store the document
+      const payload = {
+        bucket: 'case-studies',
+        path: uploadedCsPath,
+        metadata: {
+          slug,
+          csTitle,
+          csAuthor,
+          csAuthor_desc,
+          csAuthor_profile_url,
+          csCategory
+        }
+      };
+
+      const { data: functionData, error: functionError } = await supabase.functions.invoke(
+        'process-document',
+        { body: payload }
+      );
+
+      if (functionError) {
+        console.error("Edge function error:", functionError);
+        throw new Error(`Publishing failed: ${functionError.message}`);
+      }
+
+      if (!functionData.success) {
+        throw new Error(functionData.error || 'Document processing failed');
+      }
+
+      console.log("Case Study published successfully:", functionData);
+
+      // Step 2: Download the raw markdown from storage
+      console.log("Step 2: Downloading raw markdown...");
+      const { data: markdownData, error: downloadError } = await supabase.storage
+        .from('case-studies')
+        .download(functionData.markdownPath);
+
+      if (downloadError) {
+        throw new Error(`Failed to download markdown: ${downloadError.message}`);
+      }
+
+      // Convert blob to text
+      const rawMarkdown = await markdownData.text();
+      console.log("Raw markdown downloaded, length:", rawMarkdown.length);
+
+      // Step 3: Validate markdown
+      const validation = MarkdownEnhancer.validateMarkdown(rawMarkdown);
+      if (!validation.isValid) {
+        console.warn("Markdown validation warnings:", validation.errors);
+        // Continue processing but log warnings
+      }
+
+      // Step 4: Apply markdown enhancements
+      console.log("Step 4: Enhancing markdown...");
+      let enhancedMarkdown = MarkdownEnhancer.enhanceMarkdown(rawMarkdown);
+
+      // Step 5: Analyze document structure
+      console.log("Step 5: Analyzing document structure...");
+      const structure = MarkdownEnhancer.analyzeDocumentStructure(enhancedMarkdown);
+
+       // Optional: Add table of contents if needed
+       if (structure.tableOfContents.length > 3) { // Only add TOC for longer documents
+        const toc = MarkdownEnhancer.generateTableOfContents(structure);
+        // Insert TOC after the main title
+        const titleMatch = enhancedMarkdown.match(/^(#\s+.+\n)/m);
+        if (titleMatch) {
+          enhancedMarkdown = enhancedMarkdown.replace(
+            titleMatch[0],
+            titleMatch[0] + '\n' + toc
+          );
+        }
+      }
+
+      // Step 6: Extract enhanced metadata
+      console.log("Step 6: Extracting metadata...");
+      const metadata = MarkdownEnhancer.extractMetadata(enhancedMarkdown, {
+        title: csTitle,
+        author: csAuthor || 'Anonymous',
+        author_desc: csAuthor_desc || '',
+        author_profile_url: csAuthor_profile_url || '',
+        category: csCategory,
+        excerpt: null
+      });
+
+      // Step 7: Upload enhanced markdown to storage
+      console.log("Step 7: Uploading enhanced markdown...");
+      const enhancedMarkdownPath = `${slug}/${slug}.md`;
+      const { error: uploadError } = await supabase.storage
+        .from('case-studies')
+        .upload(enhancedMarkdownPath, new TextEncoder().encode(enhancedMarkdown), {
+          contentType: 'text/markdown',
+          upsert: true
+        });
+
+      if (uploadError) {
+        throw new Error(`Failed to upload enhanced markdown: ${uploadError.message}`);
+      }
+
+      // Get public URLs
+      const { data: mdUrlData } = supabase.storage
+        .from('case-studies')
+        .getPublicUrl(enhancedMarkdownPath);
+
+      const { data: docxUrlData } = supabase.storage
+        .from('case-studies')
+        .getPublicUrl(uploadedCsPath);
+
+      // Step 8: Insert record into database
+      console.log("Step 8: Publishing to database...");
+      
+      // Extract just the number from "X min read" for the integer readtime field
+      const readTimeMinutes = parseInt(structure.estimatedReadTime.match(/\d+/)?.[0] || '1');
+      
+      const csRecord = {
+        cstitle: metadata.title,  // lowercase in database
+        slug,
+        content: enhancedMarkdown,
+        markdown_content: enhancedMarkdown,
+        markdown_url: mdUrlData.publicUrl,
+        docx_url: docxUrlData.publicUrl,
+        source_file: uploadedCsPath,
+        excerpt: metadata.excerpt,
+        readtime: readTimeMinutes,  // integer field - just the number of minutes
+        csAuthor: metadata.author || 'Anonymous',  // correct camelCase
+        csauthor_desc: metadata.author_desc || '',  // lowercase in database
+        csauthor_profile_url: metadata.author_profile_url || '',  // lowercase in database
+        cscategory: metadata.category,  // lowercase in database
+        created_at: new Date().toISOString(),
+
+        // Enhanced metadata
+        word_count: structure.totalWordCount,
+        has_images: structure.hasImages,
+        has_tables: structure.hasTables,
+        has_code: structure.hasCode,
+        image_count: functionData.images.length,
+
+        // Store structure as JSON
+        document_structure: JSON.stringify(structure),
+
+        // SEO metadata
+        meta_description: metadata.excerpt?.substring(0, 160),
+
+        // Document stats
+        stats: metadata.stats
+      };
+
+      // Insert into database with basic fields fallback
+      const { data: insertData, error: insertError } = await supabase
+        .from('case_studies')
+        .upsert(csRecord, { onConflict: 'slug' })
+        .select()
+        .single();
+
+        if (insertError) {
+          // If error is about missing columns, try with basic required fields only
+          if (insertError.message.includes('column')) {
+            console.log('Retrying with basic required fields only...');
+            
+            // Try with just the required fields based on schema
+            const basicRecord = {
+              cstitle: metadata.title || csTitle,  // required field
+              slug,  // required field
+              content: enhancedMarkdown,
+              csAuthor: metadata.author || csAuthor || 'Anonymous',
+              readtime: readTimeMinutes,  // integer field
+              created_at: new Date().toISOString()
+            };
+
+            const { data: retryData, error: retryError } = await supabase
+            .from('case_studies')
+            .upsert(basicRecord, { onConflict: 'slug' })
+            .select()
+            .single();
+
+          if (retryError) {
+            throw new Error(`Failed to publish case study: ${retryError.message}`);
+          }
+
+          console.log("Case Study published successfully (basic mode):", retryData);
+        } else {
+          throw new Error(`Failed to publish case study: ${insertError.message}`);
+        }
+      } else {
+        console.log("Case Study published successfully:", insertData);
+        console.log("- Word count:", structure.totalWordCount);
+        console.log("- Read time:", structure.estimatedReadTime);
+        console.log("- Images:", functionData.images.length);
+        console.log("- Sections:", structure.sections.length);
+      }
+
+      toast({
+        title: "Case Study Published Successfully!",
+        description: `Your case study "${metadata.title}" has been published successfully.`,
+        variant: "default",
+      });
+
+      // Reset form and workflow state
+      resetCaseStudyForm();
+      setUploadedCsPath('');
+      setCanPreviewCs(false);
+      setCanPublishCs(false);
+
+      // Refresh the case studies list
+      setTimeout(() => {
+        refreshCaseStudies();
+      }, 2000);
+
+    } catch (error: any) {
+      toast({
+        title: "Publish Failed",
+        description: error.message || "An error occurred during publishing",
+        variant: "destructive",
+      });
+      console.error("Publishing error details:", error);
+    } finally {
+      setCsProcessing(false);
+    }
+  };
+
+  const handleDeleteCaseStudyClick = (caseStudy) => {
+    setSelectedCaseStudy(caseStudy);
+    setConfirmDeleteCaseStudyDialog(true);
+  };
+
+  const confirmDeleteCaseStudy = async () => {
+    if (!selectedCaseStudy) return;
+
+    try {
+      const { error } = await supabase
+        .from('case_studies')
+        .delete()
+        .eq('id', selectedCaseStudy.id);
+
+      if (error) {
+        console.error("Error deleting case study:", error);
+        toast({
+          title: "Error",
+          description: "Failed to delete case study",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setCaseStudies(caseStudies.filter(cs => cs.id !== selectedCaseStudy.id));
+
+      toast({
+        title: "Success",
+        description: "Case study deleted successfully",
+        variant: "default",
+      });
+
+      setConfirmDeleteCaseStudyDialog(false);
+    } catch (err) {
+      console.error("Delete operation failed:", err);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -1477,6 +2015,14 @@ const Admin = () => {
             <TabsTrigger value="wp-manage" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900">
               <FileCheck className="h-4 w-4 mr-2 text-indrasol-blue dark:text-indrasol-darkblue" />
               Manage Whitepapers
+            </TabsTrigger>
+            <TabsTrigger value="cs-upload" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900">
+              <BookOpen className="h-4 w-4 mr-2 text-indrasol-blue dark:text-indrasol-darkblue" />
+              Upload Case Studies
+            </TabsTrigger>
+            <TabsTrigger value="cs-manage" className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-900">
+              <FileCheck className="h-4 w-4 mr-2 text-indrasol-blue dark:text-indrasol-darkblue" />
+              Manage Case Studies
             </TabsTrigger>
           </TabsList>
 
@@ -2180,6 +2726,361 @@ const Admin = () => {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* Case Studies Upload Tab */}
+          <TabsContent value="cs-upload" className="space-y-6">
+            <Card className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 shadow-md">
+              <CardHeader className="border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 pb-4">
+                <CardTitle className="flex items-center text-xl font-semibold">
+                  <BookOpen className="h-5 w-5 mr-2 text-indrasol-blue dark:text-indrasol-darkblue" />
+                  New Case Study
+                </CardTitle>
+                <CardDescription>
+                  Upload Word documents (DOCX) to create case studies. Author information is optional for anonymous case studies.
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="pt-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-5">
+                    <div className="space-y-2">
+                      <Label htmlFor="cs-title" className="text-sm font-medium flex items-center">
+                        <FileText className="h-4 w-4 mr-2 text-gray-500" />
+                        Case Study Title
+                      </Label>
+                      <Input
+                        id="cs-title"
+                        value={csTitle}
+                        onChange={(e) => setCsTitle(e.target.value)}
+                        placeholder="Enter case study title"
+                        className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="cs-author" className="text-sm font-medium flex items-center">
+                        <User className="h-4 w-4 mr-2 text-gray-500" />
+                        Author <span className="text-gray-400 ml-1">(optional)</span>
+                      </Label>
+                      <Input
+                        id="cs-author"
+                        value={csAuthor}
+                        onChange={(e) => setCsAuthor(e.target.value)}
+                        placeholder="Enter author name (optional)"
+                        className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="author" className="text-sm font-medium flex items-center">
+                      <NotebookPen className="h-4 w-4 mr-2 text-gray-500" />
+                      Author Description <span className="text-gray-400 ml-1">(optional)</span>
+                    </Label>
+                    <Input
+                      id="cs-author_desc"
+                      value={csAuthor_desc}
+                      onChange={(e) => setCsAuthor_desc(e.target.value)}
+                      placeholder="Enter author description (optional)"
+                      className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="author" className="text-sm font-medium flex items-center">
+                      <Link className="h-4 w-4 mr-2 text-gray-500" />
+                      Author Profile URL <span className="text-gray-400 ml-1">(optional)</span>
+                    </Label>
+                    <Input
+                      id="cs-author_profile_url"
+                      value={csAuthor_profile_url}
+                      onChange={(e) => setCsAuthor_profile_url(e.target.value)}
+                      placeholder="Enter author profile URL (optional)"
+                      className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                    />
+                  </div>
+
+                  <div className="space-y-5">
+                    <div className="space-y-2">
+                      <Label htmlFor="cs-category" className="text-sm font-medium flex items-center">
+                        <Tag className="h-4 w-4 mr-2 text-gray-500" />
+                        Category
+                      </Label>
+                      <Input
+                        id="cs-category"
+                        value={csCategory}
+                        onChange={(e) => setCsCategory(e.target.value)}
+                        placeholder="Enter case study category"
+                        className="bg-gray-50 dark:bg-gray-800 border-gray-200 dark:border-gray-700"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="cs-file-upload" className="text-sm font-medium flex items-center">
+                        <Upload className="h-4 w-4 mr-2 text-gray-500" />
+                        Document (DOCX)
+                      </Label>
+                      <div className="flex items-center justify-center w-full">
+                        <label
+                          htmlFor="cs-file-upload"
+                          className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700"
+                        >
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <Upload className="w-8 h-8 mb-3 text-gray-500 dark:text-gray-400" />
+                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                              {csFile ? csFile.name : <span>Click to upload or drag and drop</span>}
+                            </p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">DOCX files only (MAX. 20MB)</p>
+                          </div>
+                          <Input
+                            id="cs-file-upload"
+                            type="file"
+                            accept=".docx"
+                            onChange={(e) => setCsFile(e.target.files[0])}
+                            className="hidden"
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+
+              <CardFooter className="flex justify-between items-center border-t border-gray-200 dark:border-gray-800 pt-6">
+                <div className="flex flex-col">
+                  {/* <Button
+                    variant="outline"
+                    onClick={resetCaseStudyForm}
+                    disabled={csProcessing || csUploading}
+                    className="flex items-center gap-2"
+                  >
+                    <XCircle className="h-4 w-4" />
+                    Clear Form
+                  </Button> */}
+                  {uploadedCsPath && (
+                    <p className="text-xs text-green-600 mt-2">
+                      ✓ Case Study uploaded 
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={handleCsUpload}
+                    disabled={csUploading || !csFile || !csTitle || !csCategory || !!uploadedCsPath}
+                    variant="outline"
+                    className="flex items-center gap-2"
+                  >
+                    {csUploading ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="h-4 w-4" />
+                        Upload
+                      </>
+                    )}
+                  </Button>
+
+                  {/* <Button
+                    onClick={handleCsPreview}
+                    disabled={!canPreviewCs || previewingCs}
+                    variant="outline"
+                    className="flex items-center gap-2 text-indrasol-blue border-indrasol-blue/20"
+                  >
+                    {previewingCs ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Previewing...
+                      </>
+                    ) : (
+                      <>
+                        <Eye className="h-4 w-4" />
+                        Preview
+                      </>
+                    )}
+                  </Button> */}
+
+                  <Button
+                    onClick={handleCsPublish}
+                    disabled={!canPublishCs || csProcessing}
+                    className="bg-indrasol-blue hover:bg-indrasol-darkblue text-white flex items-center gap-2"
+                  >
+                    {csProcessing ? (
+                      <>
+                        <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Publishing...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="h-4 w-4" />
+                        Publish
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </CardFooter>
+            </Card>
+
+            {/* Tips Card */}
+            <Card className="bg-blue-50 dark:bg-indrasol-darkblue border-indrasol-blue dark:border-indrasol-darkblue">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-indrasol-blue dark:text-indrasol-darkblue">Simplified Case Study System</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 text-xs text-indrasol-blue-700 dark:text-indrasol-darkblue-400">
+                <ul className="space-y-1">
+                  <li className="flex items-start">
+                    <ArrowRight className="h-3 w-3 mr-1 mt-0.5 flex-shrink-0" />
+                    <span>Case studies are processed exactly like blogs</span>
+                  </li>
+                  <li className="flex items-start">
+                    <ArrowRight className="h-3 w-3 mr-1 mt-0.5 flex-shrink-0" />
+                    <span>DOCX files are converted to markdown automatically</span>
+                  </li>
+                  <li className="flex items-start">
+                    <ArrowRight className="h-3 w-3 mr-1 mt-0.5 flex-shrink-0" />
+                    <span>Images are extracted and optimized</span>
+                  </li>
+                  <li className="flex items-start">
+                    <ArrowRight className="h-3 w-3 mr-1 mt-0.5 flex-shrink-0" />
+                    <span>Professional case study styling is applied automatically</span>
+                  </li>
+                </ul>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Manage Case Studies Tab */}
+          <TabsContent value="cs-manage">
+            <Card className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 shadow-md">
+              <CardHeader className="border-b border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 pb-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center text-xl font-semibold">
+                    <FileCheck className="h-5 w-5 mr-2 text-indrasol-blue dark:text-indrasol-darkblue" />
+                    Manage Case Studies
+                  </CardTitle>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={refreshCaseStudies}
+                    disabled={loadingCaseStudies}
+                    className="flex items-center gap-2"
+                  >
+                    <RefreshCw className={`h-4 w-4 ${loadingCaseStudies ? 'animate-spin' : ''}`} />
+                    Refresh
+                  </Button>
+                </div>
+                <CardDescription>
+                  View and manage your published case studies
+                </CardDescription>
+
+                <div className="mt-4">
+                  <div className="relative">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-gray-500" />
+                    <Input
+                      placeholder="Search case studies by title, author, or category..."
+                      value={csSearchQuery}
+                      onChange={(e) => setCsSearchQuery(e.target.value)}
+                      className="pl-8 bg-white dark:bg-gray-800"
+                    />
+                  </div>
+                </div>
+              </CardHeader>
+
+              <CardContent className="p-0">
+                {loadingCaseStudies ? (
+                  <div className="flex items-center justify-center p-8">
+                    <RefreshCw className="h-8 w-8 animate-spin text-indrasol-blue dark:text-indrasol-darkblue" />
+                    <span className="ml-2 text-gray-500 dark:text-gray-400">Loading case studies...</span>
+                  </div>
+                ) : filteredCaseStudies.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-[300px]">Title</TableHead>
+                          <TableHead>Author</TableHead>
+                          <TableHead>Category</TableHead>
+                          <TableHead>Published</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredCaseStudies.map((caseStudy) => (
+                          <TableRow key={caseStudy.id}>
+                            <TableCell className="font-medium">{caseStudy.cstitle || caseStudy.csTitle || caseStudy.title}</TableCell>
+                            <TableCell>{caseStudy.csAuthor || caseStudy.author}</TableCell>
+                            <TableCell>{caseStudy.cscategory || caseStudy.csCategory || caseStudy.category || 'General'}</TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3 text-gray-500" />
+                                {formatDate(caseStudy.created_at)}
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                {/* <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handlePreviewCaseStudy(caseStudy)}
+                                  className="flex items-center gap-1 text-indrasol-blue hover:text-indrasol-darkblue border-indrasol-blue/20 hover:border-indrasol-blue/40"
+                                  title="Preview case study"
+                                >
+                                  <Eye className="h-4 w-4" />
+                                  Preview
+                                </Button> */}
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleDeleteCaseStudyClick(caseStudy)}
+                                  className="h-8 w-8 p-0 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                  title="Delete case study"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <FileText className="h-12 w-12 mx-auto text-gray-400 mb-3" />
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-1">
+                      {csSearchQuery ? 'No matching case studies found' : 'No case studies yet'}
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400 mb-4">
+                      {csSearchQuery
+                        ? 'Try adjusting your search or clear the filter'
+                        : 'Upload your first case study to get started'
+                      }
+                    </p>
+                    {csSearchQuery && (
+                      <Button
+                        variant="outline"
+                        onClick={() => setCsSearchQuery('')}
+                        className="mx-auto"
+                      >
+                        Clear Search
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
       </main>
 
@@ -2252,6 +3153,40 @@ const Admin = () => {
         </DialogContent>
       </Dialog>
 
+      <Dialog open={confirmDeleteCaseStudyDialog} onOpenChange={setConfirmDeleteCaseStudyDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-semibold flex items-center text-red-600">
+              <AlertCircle className="h-5 w-5 mr-2" />
+              Confirm Deletion
+            </DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this case study? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedCaseStudy && (
+            <div className="py-4">
+              <p className="font-medium">{selectedCaseStudy.cstitle || selectedCaseStudy.csTitle || selectedCaseStudy.title}</p>
+              <p className="text-sm text-gray-500">by {selectedCaseStudy.csAuthor || selectedCaseStudy.author} in {selectedCaseStudy.cscategory || selectedCaseStudy.csCategory || selectedCaseStudy.category || 'General'}</p>
+            </div>
+          )}
+
+          <DialogFooter className="flex items-center justify-end gap-2">
+            <Button variant="outline" onClick={() => setConfirmDeleteCaseStudyDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmDeleteCaseStudy}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete Case Study
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* View Content Dialog (shared for blogs and whitepapers) */}
       <Dialog open={viewBlogDialog} onOpenChange={setViewBlogDialog}>
         <DialogContent className="max-w-7xl h-[80vh] overflow-y-auto bg-white dark:bg-gray-900">
@@ -2262,26 +3197,32 @@ const Admin = () => {
                 Content Preview
               </DialogTitle>
 
-              {(selectedBlog || selectedWhitepaper) && (
+              {(selectedBlog || selectedWhitepaper || selectedCaseStudy) && (
                 <div className="flex items-center">
                   <span className="px-2 py-1 bg-indrasol-blue/10 text-indrasol-blue text-xs font-medium rounded-full">
-                    {selectedBlog ? selectedBlog.category : (selectedWhitepaper?.wpCategory || selectedWhitepaper?.category || 'General')}
+                    {selectedBlog ? selectedBlog.category : 
+                     selectedWhitepaper ? (selectedWhitepaper.wpCategory || selectedWhitepaper.category || 'General') :
+                     selectedCaseStudy ? (selectedCaseStudy.csCategory || selectedCaseStudy.category || 'General') : 'General'}
                   </span>
                 </div>
               )}
             </div>
 
-                          {(selectedBlog || selectedWhitepaper) && (
+                          {(selectedBlog || selectedWhitepaper || selectedCaseStudy) && (
                 <div className="mt-2">
                   <h3 className="text-lg font-medium">
-                    {selectedBlog?.title || selectedWhitepaper?.wpTitle || selectedWhitepaper?.title}
+                    {selectedBlog?.title || 
+                     selectedWhitepaper?.wpTitle || selectedWhitepaper?.title ||
+                     selectedCaseStudy?.cstitle || selectedCaseStudy?.csTitle || selectedCaseStudy?.title}
                   </h3>
                   <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
                     <User className="h-3 w-3 mr-1" />
-                    <span>{selectedBlog?.author || selectedWhitepaper?.wpAuthor || selectedWhitepaper?.author}</span>
+                    <span>{selectedBlog?.author || 
+                           selectedWhitepaper?.wpAuthor || selectedWhitepaper?.author ||
+                           selectedCaseStudy?.csAuthor || selectedCaseStudy?.author}</span>
                     <span className="mx-2">•</span>
                     <Calendar className="h-3 w-3 mr-1" />
-                    <span>{formatDate((selectedBlog || selectedWhitepaper)?.created_at)}</span>
+                    <span>{formatDate((selectedBlog || selectedWhitepaper || selectedCaseStudy)?.created_at)}</span>
                   </div>
                 </div>
               )}
@@ -2312,10 +3253,19 @@ const Admin = () => {
                         setViewBlogContent(prevWp.content);
                         setViewBlogDialog(true);
                       }
+                    } else if (selectedCaseStudy) {
+                      const currentIndex = caseStudies.findIndex(cs => cs.id === selectedCaseStudy?.id);
+                      if (currentIndex > 0) {
+                        const prevCs = caseStudies[currentIndex - 1];
+                        setSelectedCaseStudy(prevCs);
+                        setViewBlogContent(prevCs.content);
+                        setViewBlogDialog(true);
+                      }
                     }
                   }}
                   disabled={(!selectedBlog || blogs.findIndex(blog => blog.id === selectedBlog?.id) <= 0) &&
-                    (!selectedWhitepaper || whitepapers.findIndex(wp => wp.id === selectedWhitepaper?.id) <= 0)}
+                    (!selectedWhitepaper || whitepapers.findIndex(wp => wp.id === selectedWhitepaper?.id) <= 0) &&
+                    (!selectedCaseStudy || caseStudies.findIndex(cs => cs.id === selectedCaseStudy?.id) <= 0)}
                   className="flex items-center gap-1"
                 >
                   <ArrowRight className="h-4 w-4 rotate-180" />
@@ -2339,10 +3289,19 @@ const Admin = () => {
                         setViewBlogContent(nextWp.content);
                         setViewBlogDialog(true);
                       }
+                    } else if (selectedCaseStudy) {
+                      const currentIndex = caseStudies.findIndex(cs => cs.id === selectedCaseStudy?.id);
+                      if (currentIndex < caseStudies.length - 1) {
+                        const nextCs = caseStudies[currentIndex + 1];
+                        setSelectedCaseStudy(nextCs);
+                        setViewBlogContent(nextCs.content);
+                        setViewBlogDialog(true);
+                      }
                     }
                   }}
                   disabled={(!selectedBlog || blogs.findIndex(blog => blog.id === selectedBlog?.id) >= blogs.length - 1) &&
-                    (!selectedWhitepaper || whitepapers.findIndex(wp => wp.id === selectedWhitepaper?.id) >= whitepapers.length - 1)}
+                    (!selectedWhitepaper || whitepapers.findIndex(wp => wp.id === selectedWhitepaper?.id) >= whitepapers.length - 1) &&
+                    (!selectedCaseStudy || caseStudies.findIndex(cs => cs.id === selectedCaseStudy?.id) >= caseStudies.length - 1)}
                   className="flex items-center gap-1"
                 >
                   Next
@@ -2361,6 +3320,8 @@ const Admin = () => {
                         handleDeleteClick(selectedBlog);
                       } else if (selectedWhitepaper) {
                         handleDeleteWhitepaperClick(selectedWhitepaper);
+                      } else if (selectedCaseStudy) {
+                        handleDeleteCaseStudyClick(selectedCaseStudy);
                       }
                     }, 100);
                   }}
