@@ -1519,9 +1519,9 @@ const Admin = () => {
   );
 
   const filteredCaseStudies = caseStudies.filter(cs =>
-    (cs.csTitle || cs.title || '').toLowerCase().includes(csSearchQuery.toLowerCase()) ||
+    (cs.cstitle || cs.csTitle || cs.title || '').toLowerCase().includes(csSearchQuery.toLowerCase()) ||
     (cs.csAuthor || cs.author || '').toLowerCase().includes(csSearchQuery.toLowerCase()) ||
-    (cs.csCategory || cs.category || '').toLowerCase().includes(csSearchQuery.toLowerCase())
+    (cs.cscategory || cs.csCategory || cs.category || '').toLowerCase().includes(csSearchQuery.toLowerCase())
   );
 
   const formatDate = (dateString: string): string => {
@@ -1860,7 +1860,7 @@ const Admin = () => {
 
       toast({
         title: "Case Study Published Successfully!",
-        description: `Your case study "${metadata.csTitle}" has been published successfully.`,
+        description: `Your case study "${metadata.title}" has been published successfully.`,
         variant: "default",
       });
 
@@ -3018,9 +3018,9 @@ const Admin = () => {
                       <TableBody>
                         {filteredCaseStudies.map((caseStudy) => (
                           <TableRow key={caseStudy.id}>
-                            <TableCell className="font-medium">{caseStudy.csTitle || caseStudy.title}</TableCell>
+                            <TableCell className="font-medium">{caseStudy.cstitle || caseStudy.csTitle || caseStudy.title}</TableCell>
                             <TableCell>{caseStudy.csAuthor || caseStudy.author}</TableCell>
-                            <TableCell>{caseStudy.csCategory || caseStudy.category || 'General'}</TableCell>
+                            <TableCell>{caseStudy.cscategory || caseStudy.csCategory || caseStudy.category || 'General'}</TableCell>
                             <TableCell>
                               <div className="flex items-center gap-1">
                                 <Calendar className="h-3 w-3 text-gray-500" />
@@ -3167,8 +3167,8 @@ const Admin = () => {
 
           {selectedCaseStudy && (
             <div className="py-4">
-              <p className="font-medium">{selectedCaseStudy.csTitle || selectedCaseStudy.title}</p>
-              <p className="text-sm text-gray-500">by {selectedCaseStudy.csAuthor || selectedCaseStudy.author} in {selectedCaseStudy.csCategory || selectedCaseStudy.category || 'General'}</p>
+              <p className="font-medium">{selectedCaseStudy.cstitle || selectedCaseStudy.csTitle || selectedCaseStudy.title}</p>
+              <p className="text-sm text-gray-500">by {selectedCaseStudy.csAuthor || selectedCaseStudy.author} in {selectedCaseStudy.cscategory || selectedCaseStudy.csCategory || selectedCaseStudy.category || 'General'}</p>
             </div>
           )}
 
@@ -3208,24 +3208,24 @@ const Admin = () => {
               )}
             </div>
 
-            {(selectedBlog || selectedWhitepaper || selectedCaseStudy) && (
-              <div className="mt-2">
-                <h3 className="text-lg font-medium">
-                  {selectedBlog?.title || 
-                   selectedWhitepaper?.wpTitle || selectedWhitepaper?.title ||
-                   selectedCaseStudy?.csTitle || selectedCaseStudy?.title}
-                </h3>
-                <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  <User className="h-3 w-3 mr-1" />
-                  <span>{selectedBlog?.author || 
-                         selectedWhitepaper?.wpAuthor || selectedWhitepaper?.author ||
-                         selectedCaseStudy?.csAuthor || selectedCaseStudy?.author}</span>
-                  <span className="mx-2">•</span>
-                  <Calendar className="h-3 w-3 mr-1" />
-                  <span>{formatDate((selectedBlog || selectedWhitepaper || selectedCaseStudy)?.created_at)}</span>
+                          {(selectedBlog || selectedWhitepaper || selectedCaseStudy) && (
+                <div className="mt-2">
+                  <h3 className="text-lg font-medium">
+                    {selectedBlog?.title || 
+                     selectedWhitepaper?.wpTitle || selectedWhitepaper?.title ||
+                     selectedCaseStudy?.cstitle || selectedCaseStudy?.csTitle || selectedCaseStudy?.title}
+                  </h3>
+                  <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
+                    <User className="h-3 w-3 mr-1" />
+                    <span>{selectedBlog?.author || 
+                           selectedWhitepaper?.wpAuthor || selectedWhitepaper?.author ||
+                           selectedCaseStudy?.csAuthor || selectedCaseStudy?.author}</span>
+                    <span className="mx-2">•</span>
+                    <Calendar className="h-3 w-3 mr-1" />
+                    <span>{formatDate((selectedBlog || selectedWhitepaper || selectedCaseStudy)?.created_at)}</span>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </DialogHeader>
 
           <div
