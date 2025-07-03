@@ -73,6 +73,25 @@ async def get_last_bot_messages(user_id: str, count: int = 2) -> list:
         ][:count]
         return fallback_messages
 
+# New fool-proof helper to read the latest bot messages from the request itself
+
+def extract_bot_lines(history: list, count: int = 2) -> list[str]:
+    """Return the last *count* bot messages from the provided chat history.
+
+    This works around eventual-consistency delays in Supabase because the
+    frontend already ships the full transcript with every turn, making the
+    in-request history the single source of truth for the most recent bot line.
+    """
+    bot_lines: list[str] = []
+    for line in reversed(history):
+        if line.lower().startswith("bot:"):
+            # Strip the prefix and whitespace, keep lower-cased for detectors
+            cleaned = line.split(":", 1)[1].strip().lower()
+            bot_lines.append(cleaned)
+            if len(bot_lines) >= count:
+                break
+    return bot_lines
+
 setup_logging()
 
 
@@ -134,7 +153,16 @@ async def chat_controller(req: QueryRequest):
         # 1. DEMO-FLOW (follow-up agent) – Only for explicit demo requests and ongoing collections
         # =====================================================================
         memory_row   = await get_conversation_memory(req.user_id) or {}
-        assistant_ln = (await get_last_bot_messages(req.user_id, 1) or [""])[0].lower()
+
+        # --- Retrieve the very latest bot line (prefer in-request transcript) ---
+        last_bot_msgs = extract_bot_lines(req.history, 1)
+
+        # If history is empty (first message or malformed), fall back to DB
+        if not last_bot_msgs:
+            last_bot_msgs = await get_last_bot_messages(req.user_id, 1)
+
+        assistant_ln = (last_bot_msgs or [""])[0].lower()
+
         user_text    = req.query.lower().strip()
 
         # ------------------------------------------------------------------
@@ -225,7 +253,7 @@ async def chat_controller(req: QueryRequest):
             stage_key      = "collecting_call_info" if is_call else "collecting_info"
 
             reply = (
-                f"Perfect! Let’s lock in that {cta_type}. "
+                f"Perfect! Let's lock in that {cta_type}. "
                 "Just fill in the quick form so our team can reach out."
             )
 
@@ -415,10 +443,10 @@ async def chat_controller(req: QueryRequest):
             })
 
             return ChatResponse(
-                response=cta_response,
-                intent=intent,
-                routed_agent="cta",
-                suggested=["Book a demo", "Speak to expert", "Tell me more"]
+                response     = cta_response,
+                intent       = intent,
+                routed_agent = "cta",
+                action       = "choose_contact_method"   # FE shows Demo / Call buttons immediately
             )
 
         # --------- Fallback ----------

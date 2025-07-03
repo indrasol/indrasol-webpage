@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { X } from "lucide-react";
 import { API_ENDPOINTS } from "../../config";
 import { bootstrapChat } from "../../services/chatService";
@@ -18,10 +18,27 @@ export const CallFormOverlay: React.FC<Props> = ({ onClose, onSuccess }) => {
   });
   const [loading, setLoading] = useState(false);
   const loadingRef = useRef(false);
-  const { userId } = bootstrapChat();
+
+  // Resolve user ID once overlay mounts
+  const [userId, setUserId] = useState<string>("");
+
+  // Phone validation (E.164) → starts with +, 8-15 digits
+  const PHONE_REGEX = /^\+\d{8,15}$/;
+  const [phoneError, setPhoneError] = useState<string>("");
+
+  useEffect(() => {
+    bootstrapChat()
+      .then(({ userId }) => setUserId(userId))
+      .catch((err) => console.error("bootstrapChat error", err));
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
+    if (name === "phone") {
+      // live validation
+      setPhoneError(PHONE_REGEX.test(value.trim()) ? "" : "Enter valid phone incl. country code e.g. +15551234567");
+    }
     
     // If date is changed, we might need to clear the time if it's no longer valid
     if (name === 'date') {
@@ -41,7 +58,8 @@ export const CallFormOverlay: React.FC<Props> = ({ onClose, onSuccess }) => {
     }
   };
 
-  const isFormValid = form.name.trim() && form.phone.trim() && form.date && form.time;
+  const isPhoneValid = PHONE_REGEX.test(form.phone.trim());
+  const isFormValid = form.name.trim() && isPhoneValid && form.date && form.time;
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -176,12 +194,17 @@ export const CallFormOverlay: React.FC<Props> = ({ onClose, onSuccess }) => {
           <input
             name="phone"
             type="tel"
-            placeholder="Phone Number (e.g., +1-555-123-4567)"
+            placeholder="Phone Number (e.g. +15551234567)"
             required
             value={form.phone}
             onChange={handleChange}
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all duration-200"
+            className={`w-full px-4 py-3 rounded-xl border transition-all duration-200 ${
+              phoneError ? "border-red-400 focus:ring-red-300" : "border-gray-200 focus:ring-2 focus:ring-blue-400 focus:border-blue-400"
+            }`}
           />
+          {phoneError && (
+            <p className="text-red-500 text-xs mt-1">{phoneError}</p>
+          )}
 
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -239,7 +262,7 @@ export const CallFormOverlay: React.FC<Props> = ({ onClose, onSuccess }) => {
 
           <button
             type="submit"
-            disabled={!isFormValid || loading}
+            disabled={loading || !isFormValid}
             className="w-full py-3 rounded-xl font-semibold text-white bg-gradient-to-r
                        from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700
                        disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed

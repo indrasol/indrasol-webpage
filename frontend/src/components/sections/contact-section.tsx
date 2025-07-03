@@ -21,6 +21,11 @@ export function ContactSection() {
   const [formStatus, setFormStatus] = useState<null | "submitting" | "success" | "error">(null);
   const [contactMethod, setContactMethod] = useState<"message" | "call" | null>("message"); // Default to "message"
 
+
+  // Phone validation (E.164)
+  const PHONE_REGEX = /^\+\d{8,15}$/;
+  const [phoneError, setPhoneError] = useState<string>("");
+
   // Add refs for forms
   const messageFormRef = useRef<HTMLDivElement>(null);
   const callFormRef = useRef<HTMLDivElement>(null);
@@ -36,6 +41,7 @@ export function ContactSection() {
     }
   };
 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormState({
       ...formState,
@@ -45,6 +51,10 @@ export function ContactSection() {
 
   const handleCallFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    
+    if (name === "phone") {
+      setPhoneError(PHONE_REGEX.test(value.trim()) ? "" : "Include country code, e.g. +15551234567");
+    }
     
     // If date is changed, we might need to clear the time if it's no longer valid
     if (name === 'date') {
@@ -191,7 +201,8 @@ export function ContactSection() {
     { value: "Pacific/Honolulu", display: "Hawaii Time (HST)", short: "HI" },
   ];
 
-  const isCallFormValid = callFormState.name.trim() && callFormState.phone.trim() && callFormState.date && callFormState.time;
+  const isPhoneValid = PHONE_REGEX.test(callFormState.phone.trim());
+  const isCallFormValid = callFormState.name.trim() && isPhoneValid && callFormState.date && callFormState.time;
 
   return (
     <section id="contact" className="py-24 md:py-32 relative overflow-hidden">
@@ -422,10 +433,13 @@ export function ContactSection() {
                           name="phone"
                           value={callFormState.phone}
                           onChange={handleCallFormChange}
-                          className="w-full px-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-300 hover:border-gray-300"
+                          className={`w-full px-4 py-4 bg-gray-50 border rounded-2xl transition-all duration-300 hover:border-gray-300 ${
+                            phoneError ? "border-red-400 focus:ring-red-300" : "border-gray-200 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                          }`}
                           required
-                          placeholder="+1-555-123-4567"
+                          placeholder="+15551234567"
                         />
+                        {phoneError && <p className="text-red-500 text-xs mt-1">{phoneError}</p>}
                       </div>
                     </div>
 
