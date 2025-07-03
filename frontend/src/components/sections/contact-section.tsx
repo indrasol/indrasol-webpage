@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Mail, Phone, Send, MapPin, ArrowRight, Calendar, MessageSquare, Users, Clock } from "lucide-react";
 import { API_ENDPOINTS } from '../../config';
 
@@ -21,9 +21,26 @@ export function ContactSection() {
   const [formStatus, setFormStatus] = useState<null | "submitting" | "success" | "error">(null);
   const [contactMethod, setContactMethod] = useState<"message" | "call" | null>("message"); // Default to "message"
 
+
   // Phone validation (E.164)
   const PHONE_REGEX = /^\+\d{8,15}$/;
   const [phoneError, setPhoneError] = useState<string>("");
+
+  // Add refs for forms
+  const messageFormRef = useRef<HTMLDivElement>(null);
+  const callFormRef = useRef<HTMLDivElement>(null);
+
+  // Helper to scroll with offset (e.g., for sticky header)
+  const scrollToRefWithOffset = (ref: React.RefObject<HTMLElement>, offset = 80) => {
+    if (ref.current) {
+      const elementTop = ref.current.getBoundingClientRect().top + window.pageYOffset;
+      window.scrollTo({
+        top: elementTop - offset,
+        behavior: "smooth"
+      });
+    }
+  };
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormState({
@@ -216,7 +233,12 @@ export function ContactSection() {
         <div className="max-w-4xl mx-auto mb-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <button
-              onClick={() => setContactMethod("message")}
+              onClick={() => {
+                setContactMethod("message");
+                setTimeout(() => {
+                  scrollToRefWithOffset(messageFormRef);
+                }, 100);
+              }}
               className={`group relative p-8 rounded-3xl border-2 transition-all duration-300 transform hover:scale-105 ${
                 contactMethod === "message" 
                   ? "border-indrasol-blue bg-gradient-to-br from-indrasol-blue/5 to-indrasol-blue/10 shadow-2xl" 
@@ -245,7 +267,12 @@ export function ContactSection() {
             </button>
 
             <button
-              onClick={() => setContactMethod("call")}
+              onClick={() => {
+                setContactMethod("call");
+                setTimeout(() => {
+                  scrollToRefWithOffset(callFormRef);
+                }, 100);
+              }}
               className={`group relative p-8 rounded-3xl border-2 transition-all duration-300 transform hover:scale-105 ${
                 contactMethod === "call" 
                   ? "border-emerald-500 bg-gradient-to-br from-emerald-50 to-green-50 shadow-2xl" 
@@ -357,7 +384,7 @@ export function ContactSection() {
           {/* Contact Form Section */}
           <div className="lg:col-span-7">
             {contactMethod === "call" ? (
-              <div className="bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-2xl border border-gray-100 relative overflow-hidden">
+              <div ref={callFormRef} className="bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-2xl border border-gray-100 relative overflow-hidden">
                 <div className="absolute -right-16 -bottom-16 w-64 h-64 bg-gradient-to-l from-emerald-500/10 to-transparent rounded-full"></div>
                 
                 <h3 className="text-3xl font-bold text-gray-900 mb-6 relative z-10">Schedule Your Call</h3>
@@ -518,7 +545,7 @@ export function ContactSection() {
                 )}
               </div>
             ) : contactMethod === "message" ? (
-              <div className="bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-2xl border border-gray-100 relative overflow-hidden">
+              <div ref={messageFormRef} className="bg-white/80 backdrop-blur-sm p-8 rounded-3xl shadow-2xl border border-gray-100 relative overflow-hidden">
                 <div className="absolute -right-16 -bottom-16 w-64 h-64 bg-gradient-to-l from-indrasol-blue/10 to-transparent rounded-full"></div>
 
                 <h3 className="text-3xl font-bold text-gray-900 mb-6 relative z-10">Send Us a Message</h3>
