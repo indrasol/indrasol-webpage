@@ -71,6 +71,7 @@ app = FastAPI(
 
 # Allow frontend origins
 origins = [
+    "https://dashboard.vapi.ai",
     "http://localhost:8081",
     "http://localhost:8080",
     "http://127.0.0.1:8081",
