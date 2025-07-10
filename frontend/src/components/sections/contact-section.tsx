@@ -335,6 +335,9 @@ export function ContactSection() {
                     <a href="tel:+14244046372" className="text-indrasol-blue hover:text-indrasol-blue/80 transition-colors mt-1 block font-medium">
                       +1 424 404 6372
                     </a>
+                    <a href="tel:+14244046372" className="text-indrasol-blue hover:text-indrasol-blue/80 transition-colors mt-1 block font-medium">
+                      (+ 1 (424) 40INDRA)
+                    </a>
                   </div>
                 </div>
 

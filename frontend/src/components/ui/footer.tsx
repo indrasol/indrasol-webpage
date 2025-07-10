@@ -113,21 +113,22 @@ export function Footer() {
                   </div>
                   </a>
                  
+                 {/* Phone Number */}
                  <a href="tel:+14244046372">
-                <div className="group flex items-center hover:bg-white/5 p-3 rounded-2xl transition-all duration-300">
-                  <div className="p-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-xl mr-4">
-                    <Phone className="h-5 w-5 text-green-400" />
+                  <div className="group flex items-center hover:bg-white/5 p-3 rounded-2xl transition-all duration-300">
+                    <div className="p-2 bg-gradient-to-r from-green-500/20 to-emerald-500/20 rounded-xl mr-4">
+                      <Phone className="h-5 w-5 text-green-400" />
+                    </div>
+                    <div>
+                      <span className="text-white/90 hover:text-white transition-colors font-medium">
+                        +1 424 404 6372
+                      </span>
+                      <div className="text-white/60 text-sm mt-1">
+                        (+ 1 (424) 40INDRA)
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                   <a href="tel:+14244046372" className="text-white/90 hover:text-white transition-colors font-medium">
-                    +1 424 404 6372
-                  </a>
-                  </div>
-                  
-                </div>
-                </a>
-
-          
+                 </a>
 
                 <a href="mailto:sales@indrasol.com">
                 <div className="group flex items-center hover:bg-white/5 p-3 rounded-2xl transition-all duration-300">
