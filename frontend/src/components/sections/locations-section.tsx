@@ -180,6 +180,18 @@ export function LocationsSection() {
                     </a>
 
                     <a
+                      href={`tel:${location.phone}`}
+                      className="flex items-center p-3 rounded-xl hover:bg-gray-50 transition-all duration-300 group/contact"
+                    >
+                      <div className={`p-2 bg-gradient-to-r ${location.color} rounded-xl mr-3 group-hover/contact:scale-110 transition-transform duration-300`}>
+                        <Phone className="h-4 w-4 text-white" strokeWidth={2} />
+                      </div>
+                      <span className="text-sm text-gray-700 group-hover/contact:text-indrasol-blue transition-colors font-medium">
+                        (+ 1 (424) 40INDRA)
+                      </span>
+                    </a>
+
+                    <a
                       href={`mailto:${location.email}`}
                       className="flex items-center p-3 rounded-xl hover:bg-gray-50 transition-all duration-300 group/contact"
                     >
