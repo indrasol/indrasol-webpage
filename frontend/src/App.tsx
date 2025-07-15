@@ -17,12 +17,14 @@ import Products from "./pages/Products";
 
 import BizRadarProductPage from "./pages/Products/BizRadarProductPage";
 import SecureTrackProductPage from "./pages/Products/SecureTrackProductPage";
+import AiReceptionistProductPage from "./pages/Products/AiReceptionistProductPage";
 import BlogPageSection from "./pages/Resources/BlogPageSection";
 import BlogDetailPage from "./pages/Resources/BlogDetailPage";
 import WhitePaperSection from "./pages/Resources/WhitePaperSection";
 import WhitePaper1 from "./components/whitepaper/ai-augmented-pen-testing";
 import WhitepaperDetailPage from "./pages/Resources/WhitepaperDetailPage";
 import CaseStudies from "./pages/Resources/CaseStudies";
+import CaseStudyDetailPage from "./pages/Resources/CaseStudyDetailPage";
 
 import Admin from "./pages/Admin";
 import ProtectedAdminRoute from "./components/ProtectedAdminRoute";
@@ -74,9 +76,11 @@ const App = () => (
           <Route path="/services/data-engineering" element={<DataEngineering />} />
           <Route path="/Products/Bizradar" element={<BizRadarProductPage />} />
           <Route path="/Products/Securetrack" element={<SecureTrackProductPage />} />
+          <Route path="/Products/AiReceptionist" element={<AiReceptionistProductPage />} />
           <Route path="/Resources/blogs2" element={<BlogPageSection />} />
           <Route path="/Resources/blog/:slug" element={<BlogDetailPage />} />
           <Route path="/Resources/case-studies" element={<CaseStudies />} />
+          <Route path="/Resources/case-study/:slug" element={<CaseStudyDetailPage />} />
           <Route path="/Resources/whitepaper" element={<WhitePaperSection />} />
           <Route path="/resources/whitepaper/:slug" element={<WhitePaperRouter />} />
           <Route path="/components/whitepaper/:slug" element={<WhitePaperRouter />} />
