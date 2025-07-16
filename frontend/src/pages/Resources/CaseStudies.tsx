@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Navbar } from "@/components/ui/navbar";
 import { Footer } from "@/components/ui/footer";
-import { CaseStudyModal } from "@/components/ui/CaseStudyModal";
 import { ArrowRight, TrendingUp, Users, Zap, Shield, Building, BarChart3, Database, Activity, Lock, Loader2, Search, Filter, ChevronDown, Tag, Calendar, Clock, Grid3X3, List, Eye, X, BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/supabase";
@@ -318,11 +317,11 @@ const SearchAndFilters: React.FC<{
 
 
 // Regular Case Study Card Component
-const CaseStudyCard: React.FC<{ caseStudy: CaseStudy; onClick: () => void }> = ({ caseStudy, onClick }) => {
+const CaseStudyCard: React.FC<{ caseStudy: CaseStudy }> = ({ caseStudy }) => {
   return (
-    <div
+    <Link
+      to={`/Resources/case-study/${caseStudy.slug || generateSlug(caseStudy.csTitle)}`}
       className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 h-full flex flex-col cursor-pointer group"
-      onClick={onClick}
     >
       <div className="relative h-48 overflow-hidden">
         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
@@ -378,16 +377,16 @@ const CaseStudyCard: React.FC<{ caseStudy: CaseStudy; onClick: () => void }> = (
           </div>
         )}
       </div>
-    </div>
+    </Link>
   );
 };
 
 // List view case study card
-const CaseStudyListCard: React.FC<{ caseStudy: CaseStudy; onClick: () => void }> = ({ caseStudy, onClick }) => {
+const CaseStudyListCard: React.FC<{ caseStudy: CaseStudy }> = ({ caseStudy }) => {
   return (
-    <div
+    <Link
+      to={`/Resources/case-study/${caseStudy.slug || generateSlug(caseStudy.csTitle)}`}
       className="bg-white rounded-lg p-6 hover:shadow-lg transition-all duration-300 border border-gray-100 cursor-pointer group"
-      onClick={onClick}
     >
       <div className="flex gap-6">
         {/* Thumbnail */}
@@ -449,7 +448,7 @@ const CaseStudyListCard: React.FC<{ caseStudy: CaseStudy; onClick: () => void }>
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 
@@ -542,8 +541,6 @@ const LoadingState: React.FC = () => (
 
 // Main component
 const CaseStudies = () => {
-  const [selectedCaseStudy, setSelectedCaseStudy] = useState<string | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -556,16 +553,6 @@ const CaseStudies = () => {
     dateRange: "all",
     readTimeRange: "all"
   });
-
-  const openModal = (caseStudy: CaseStudy) => {
-    setSelectedCaseStudy(caseStudy.id);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedCaseStudy(null);
-  };
 
   // Fetch case studies from Supabase
   useEffect(() => {
@@ -797,7 +784,6 @@ const CaseStudies = () => {
                           >
                             <CaseStudyCard 
                               caseStudy={caseStudy} 
-                              onClick={() => openModal(caseStudy)} 
                             />
                           </div>
                         ))}
@@ -820,7 +806,6 @@ const CaseStudies = () => {
                           >
                             <CaseStudyListCard 
                               caseStudy={caseStudy} 
-                              onClick={() => openModal(caseStudy)} 
                             />
                           </div>
                         ))}
@@ -856,13 +841,6 @@ const CaseStudies = () => {
         </div>
       </section>
       <Footer />
-      
-      {/* Case Study Modal */}
-      <CaseStudyModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        caseStudyId={selectedCaseStudy}
-      />
     </>
   );
 };

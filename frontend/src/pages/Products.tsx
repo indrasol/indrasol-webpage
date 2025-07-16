@@ -14,7 +14,8 @@ import {
   Zap,
   Activity,
   Lock,
-  BarChart
+  BarChart,
+  PhoneCall
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/ui/navbar";
@@ -308,7 +309,7 @@ const Products = () => {
   // Products data
   const products = [
     {
-      icon: Search,
+      icon: Activity,
       title: "Bizradar",
       tagline: "Discover. Analyze. Win.",
       description: "AI-driven contract tracking dashboard that automates the discovery and analysis of cybersecurity, AI, and data engineering projects across government and freelance marketplaces.",
@@ -328,7 +329,7 @@ const Products = () => {
       isNew: false
     },
     {
-      icon: FileSearch,
+      icon: Lock,
       title: "SecureTrack",
       tagline: "Analyze. Identify. Secure.",
       description: "Intelligent security architecture design review application that analyzes diagrams, identifies gaps, and provides actionable recommendations using AI-driven insights.",
@@ -346,6 +347,25 @@ const Products = () => {
       link: "/Products/Securetrack",
       accentColor: "indrasol-blue",
       isNew: false
+    },
+    {
+      icon: PhoneCall,
+      title: "AI Receptionist",
+      tagline: "Welcome. Assist. Connect.",
+      description: "Intelligent virtual receptionist that provides 24/7 customer support and appointment scheduling using advanced AI and natural language processing.",
+      features: [
+        "24/7 customer support",
+        "Smart appointment scheduling",
+        "Natural language processing",
+        "Seamless system integration"
+      ],
+      stats: [
+        { value: "24/7", label: "Always Available" },
+        
+      ],
+      link: "/Products/AiReceptionist",
+      accentColor: "indrasol-blue",
+      isNew: true
     }
   ];
 
