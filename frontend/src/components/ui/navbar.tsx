@@ -22,7 +22,8 @@ import {
   Briefcase,
   MapPin,
   Cpu,
-  Code
+  Code,
+  PhoneCall
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -316,6 +317,13 @@ function NavLinks({ className, isMobile = false }: { className?: string, isMobil
                   <Lock className="mr-2 h-4 w-4 text-indrasol-blue stroke-4" />
                   Securetrack
                 </Link>
+                <Link 
+                  to="/Products/AiReceptionist" 
+                  className="flex items-center py-2 text-sm text-gray-700 hover:text-indrasol-blue"
+                >
+                  <PhoneCall className="mr-2 h-4 w-4 text-indrasol-blue stroke-4" />
+                  AI Receptionist
+                </Link>
               </div>
             )}
           </div>
@@ -524,6 +532,13 @@ function NavLinks({ className, isMobile = false }: { className?: string, isMobil
                   >
                     <Lock className="mr-2 h-4 w-4 text-indrasol-blue stroke-4" />
                     Securetrack
+                  </Link>
+                  <Link 
+                    to="/Products/AiReceptionist" 
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <PhoneCall className="mr-2 h-4 w-4 text-indrasol-blue stroke-4" />
+                    AI Receptionist
                   </Link>
                 </div>
               </div>
