@@ -1,5 +1,6 @@
 from knowledge_base.blog_titles import BLOG_TITLES
 from knowledge_base.whitepapers import WHITEPAPER_TITLES
+from knowledge_base.case_study_titles import CASESTUDY_TITLES
 # ── config/highlight_terms.py ────────────────────────────────────────────
 """
 All keywords the formatter should bold or bullet-ize.
@@ -8,6 +9,7 @@ Add to these lists any time you add a new logo, city, product, etc.
 PRODUCTS = [
     "SecureTrack",
     "BizRadar",
+    "AI Receptionist",
 ]
 
 SERVICES = [
@@ -40,6 +42,7 @@ LOCATIONS = [
 URLS = {
     "bizradar":     "https://indrasol.com/Products/Bizradar",
     "securetrack":  "https://indrasol.com/Products/Securetrack",
+    "ai receptionist": "http://localhost:8080/Products/AiReceptionist",
 
     # ── services ────────────────────────────────────────────────────────
     "ai solutions":                    "https://indrasol.com/services/aisolutions",
@@ -81,6 +84,14 @@ try:
         )
 except ImportError:
     WHITEPAPER_TITLES = []
+try:
+    from knowledge_base.case_study_titles import CASESTUDY_TITLES
+    for title in CASESTUDY_TITLES:
+        URLS[title.lower()] = (
+            "https://indrasol.com/Resources/case-studies/" + _slug(title)
+        )
 
+except ImportError:
+    CASESTUDY_TITLES = []
 # expose the full-title lists so the formatter can bold them
-TITLES = BLOG_TITLES + WHITEPAPER_TITLES
+TITLES = BLOG_TITLES + WHITEPAPER_TITLES + CASESTUDY_TITLES

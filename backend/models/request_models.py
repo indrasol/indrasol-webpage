@@ -8,6 +8,7 @@ class QueryRequest(BaseModel):
     user_id: str
     query: str
     history: Optional[List[str]] = []
+    isReturningUser: Optional[bool] = False
 
 class ChatRequest(BaseModel):
     user_id: str | None = None

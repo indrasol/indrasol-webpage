@@ -264,8 +264,9 @@ export const chatService = {
   /** Send a message & update local history */
   sendMessage: async (
     messageText: string,
-    history: Message[]
-  ): Promise<{ botReply: Message; newHistory: Message[] }> => {
+    history: Message[],
+    isReturningUser: boolean = false
+  ): Promise<{ botReply: Message; newHistory: Message[] ; isReturningUser: boolean }> => {
     const { userId } = await bootstrapChat();
 
     // 1️⃣  Add the user message optimistically
@@ -279,7 +280,8 @@ export const chatService = {
         body: JSON.stringify({
           user_id: userId,
           query: messageText,
-          history: toPlainHistory(updatedHistory) // send FULL transcript
+          history: toPlainHistory(updatedHistory),// send FULL transcript
+          isReturningUser: true // always false for new session
         }),
         signal: AbortSignal.timeout?.(15000)      // native timeout (Chrome 117+)
       });
@@ -297,7 +299,7 @@ export const chatService = {
       const finalHistory = [...updatedHistory, botMsg];
       saveHistory(finalHistory);
 
-      return { botReply: botMsg, newHistory: finalHistory };
+      return { botReply: botMsg, newHistory: finalHistory, isReturningUser };
     } catch (err) {
       console.error('chatService error', err);
       const fallback: Message = {
@@ -307,7 +309,7 @@ export const chatService = {
       };
       const errorHistory = [...updatedHistory, fallback];
       saveHistory(errorHistory);
-      return { botReply: fallback, newHistory: errorHistory };
+      return { botReply: fallback, newHistory: errorHistory, isReturningUser };
     }
   },
 
@@ -393,7 +395,9 @@ export const chatService = {
       }
     }
     return null;
-  }
+  },
+
+  bootstrapChat, // <-- add this line
 };
 
 // Initialize cleanup on module load

@@ -1,5 +1,6 @@
 import re
 from functools import lru_cache
+from services.openai_service import run_openai_prompt
 
 # --- legacy keywords (fast, free) -----------
 _OBJECTION_KEYWORDS = [

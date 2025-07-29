@@ -15,8 +15,8 @@ from mcp.schema   import Skill, Turn, Conversation, Result
 from services.openai_client_service import async_chat
 
 _LOG         = logging.getLogger("skill.objection")
-_PROMPT_TMPL = Path(__file__).with_name("prompt.md").read_text()
-
+# _PROMPT_TMPL = Path(__file__).with_name("prompt.md").read_text()
+_PROMPT_TMPL = Path(__file__).with_name("prompt.md").read_text(encoding='utf-8')
 FALLBACK = (
     "I understand your hesitation. Most clients felt the same until they saw "
     "how **Indrasol** cut audit prep by **76 %**. Would a brief call help?"

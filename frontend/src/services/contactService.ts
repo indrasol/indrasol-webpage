@@ -16,6 +16,7 @@ export const contactService = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form)
     });
+    console.log("Contact submission response:", res);
     if (!res.ok) throw new Error("Contact submission failed");
   }
 };

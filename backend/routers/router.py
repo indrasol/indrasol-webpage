@@ -4,13 +4,14 @@ import logging
 import re
 # ────── request / response models ──────
 from models.request_models import QueryRequest
-from models.response_models import ChatResponse
+from models.response_models import ChatResponse, ConversationResponse, ConversationTurn
 
 # ────── helper services ──────
 from services.objection_service import contains_objection          # async bool
 from services.lead_service import detect_service, is_hot_lead      # async str / bool
 from services.supabase_service import upsert_conversation_memory, sync_qualified_lead, get_conversation_memory, get_conversation_history
-from services.detect_intent_service import is_demo_request, is_positive_response, is_call_request
+from services.detect_intent_service import is_demo_request, is_positive_response, is_call_request, is_greeting
+from services.cache_service import async_cache_workflow
 
 # ────── AI agents ──────
 from agents.engagement_agent import run_engagement_agent
@@ -103,16 +104,42 @@ message_router = APIRouter()
 @message_router.post("/message", response_model=ChatResponse)
 async def chat_controller(req: QueryRequest):
     try:
-         # ========== 0. First message → Engagement ==========
-        if not req.history and re.match(r"^\s*(hi|hello|hey|greetings|howdy|yo)\b", req.query, re.I):
-            logging.info("Engagement Agent taking over")
-            response = await run_engagement_agent(req.query)
-            # logging.info(f"Engagement Agent response: {response}")
-            if not response or not isinstance(response, str):
-                raise HTTPException(status_code=500, detail="Engagement Agent failed to respond")
-            
-            # Build history for first message
-            full_history = build_updated_history([], req.query, response)
+        # logging.info(f"Received query: {req.query}")
+        # logging.info(f"History length: {len(req.history)}")
+        # logging.info(f"Is returning user: {getattr(req, 'isReturningUser', False)}")
+
+        # ========== 0. Special trigger for returning users ==========
+        if req.query == "" and getattr(req, "isReturningUser", False) and len(req.history) > 1:
+            logging.info("Triggering Engagement Agent for returning user")
+            response = await run_engagement_agent(req.query, context="", history=req.history)
+            #logging.info(f"Engagement Agent response: {response}")
+
+            full_history = build_updated_history(req.history, req.query, response)
+            await upsert_conversation_memory(
+                user_id=req.user_id,
+                memory={
+                    "intent": "Engagement",
+                    "product": "",
+                    "service": "",
+                    "qualified": False,
+                    "last_agent": "EngagementAgent"
+                },
+                history=full_history
+            )
+
+            return ChatResponse(response=response, routed_agent="engagement")
+
+        # ========== 1. Greeting Detection ==========
+        # is_greeting = bool(re.match(r"^\s*(hi|hello|hey|greetings|howdy|yo)\b", req.query, re.I))
+        is_greetings = is_greeting(req.query)
+        logging.info(f"Is greeting: {is_greetings}")
+        is_first_message = len(req.history) <= 1
+
+        if is_greetings or is_first_message:
+            logging.info("Greeting detected, routing to Engagement Agent")
+            response = await run_engagement_agent(req.query, context="", history=req.history)
+
+            full_history = build_updated_history(req.history, req.query, response)
             await upsert_conversation_memory(
                 user_id=req.user_id,
                 memory={
@@ -125,6 +152,49 @@ async def chat_controller(req: QueryRequest):
                 history=full_history
             )
             return ChatResponse(response=response, routed_agent="engagement")
+
+        # (continue with normal objection / intent flow...)
+
+        #     )
+         # ========== 0. First message → Engagement ==========
+        # if not req.history and re.match(r"^\s*(hi|hello|hey|greetings|howdy|yo)\b", req.query, re.I):
+        #     if not getattr(req, "isReturningUser", False):
+        #         logging.info("First message detected, routing to Engagement Agent")
+        #         logging.info("Engagement Agent taking over")
+        #         response = await run_engagement_agent(req.query)
+            # logging.info(f"Engagement Agent response: {response}")
+            # if not response or not isinstance(response, str):
+            #     raise HTTPException(status_code=500, detail="Engagement Agent failed to respond")
+        # --- NEW: Handle force_engagement_greeting ---
+        # if (getattr(req, "isReturningUser", False) and (req.history == req.history)) or is_greeting(req.query):
+        # if (
+        #      ((getattr(req, "isReturningUser", False) and (not req.query.strip()) and not req.history))
+        #      or is_greeting(req.query)
+        #      or (not req.history and is_greeting(req.query))
+        # ):
+        #     logging.info("Force engagement greeting triggered")
+        #     logging.info(f"User query: {req.query}")
+        #     logging.info(f"User history: {req.history}")
+        #     response = await run_engagement_agent(req.query, context="", history=req.history)
+        #     logging.info(f"Engagement Agent Greeting response: {response}")
+
+            # if not response or not isinstance(response, str):
+            #     raise HTTPException(status_code=500, detail="Engagement Agent failed to respond")
+            
+            # Build history for first message
+            # full_history = build_updated_history([], req.query, response)
+            # await upsert_conversation_memory(
+            #     user_id=req.user_id,
+            #     memory={
+            #         "intent": "Engagement",
+            #         "product": "",
+            #         "service": "",
+            #         "qualified": False,
+            #         "last_agent": "EngagementAgent"
+            #     },
+            #     history=full_history
+            # )
+            # return ChatResponse(response=response, routed_agent="engagement")
 
         # ========== 1. Objection shortcut ==========
         if await contains_objection(req.query):
@@ -303,50 +373,51 @@ async def chat_controller(req: QueryRequest):
 
         # ========== 2. Intent classification ==========
         conv_summary = await run_summary_agent(req.history)
+        #logging.info("Calling query intent agent")
         intent = await run_intent_agent(req.query, conv_summary)
         logging.info(f"Intent = {intent}")
 
-        # --------- Cold ----------
-        if intent == "Cold":
-            logging.info("Cold intent detected, routing to Info Agent")
-            quick_ctx = await retrieve_context(req.query)
-            if quick_ctx["chunks"]:
-                info_reply = await run_info_agent(req.query, quick_ctx["chunks"])
-                logging.info(f"Info Agent response: {info_reply}")
+        # # --------- Cold ----------
+        # if intent == "Cold":
+        #     logging.info("Cold intent detected, routing to Info Agent")
+        #     quick_ctx = await retrieve_context(req.query)
+        #     if quick_ctx["chunks"]:
+        #         info_reply = await run_info_agent(req.query, quick_ctx["chunks"])
+        #         logging.info(f"Info Agent response: {info_reply}")
 
-                # Persist as Info Request (not qualified)
-                full_history = build_updated_history(req.history, req.query, info_reply)
-                await upsert_conversation_memory(
-                    user_id=req.user_id,
-                    memory={
-                        "intent": "Info Request",
-                        "qualified": False,
-                        "last_agent": "InfoAgent"
-                    },
-                    history=full_history
-                )
-                return ChatResponse(
-                    response=info_reply,
-                    intent="Info Request",
-                    routed_agent="info"
-                )
-            # Persist neutral response
-            neutral_response = "Glad to help! Let me know what you're exploring — products, services, or just browsing."
-            full_history = build_updated_history(req.history, req.query, neutral_response)
-            await upsert_conversation_memory(
-                user_id=req.user_id,
-                memory={
-                    "intent": "Cold",
-                    "qualified": False,
-                    "last_agent": "InfoAgent"
-                },
-                history=full_history
-            )
-            return ChatResponse(
-                response=neutral_response,
-                intent=intent,
-                routed_agent="neutral"
-            )
+        #         # Persist as Info Request (not qualified)
+        #         full_history = build_updated_history(req.history, req.query, info_reply)
+        #         await upsert_conversation_memory(
+        #             user_id=req.user_id,
+        #             memory={
+        #                 "intent": "Info Request",
+        #                 "qualified": False,
+        #                 "last_agent": "InfoAgent"
+        #             },
+        #             history=full_history
+        #         )
+        #         return ChatResponse(
+        #             response=info_reply,
+        #             intent="Info Request",
+        #             routed_agent="info"
+        #         )
+        #     # Persist neutral response
+        #     neutral_response = "Glad to help! Let me know what you're exploring — products, services, or just browsing."
+        #     full_history = build_updated_history(req.history, req.query, neutral_response)
+        #     await upsert_conversation_memory(
+        #         user_id=req.user_id,
+        #         memory={
+        #             "intent": "Cold",
+        #             "qualified": False,
+        #             "last_agent": "InfoAgent"
+        #         },
+        #         history=full_history
+        #     )
+        #     return ChatResponse(
+        #         response=neutral_response,
+        #         intent=intent,
+        #         routed_agent="neutral"
+        #     )
         
         # --------- Interested (Product / Service) ----------
         if intent in ("Interested in Product", "Interested in Services","Info Request"):
@@ -375,14 +446,16 @@ async def chat_controller(req: QueryRequest):
             # logging.info("Interested intent detected, routing to Sales Agent")
 
             context_txt = "\n\n".join(context["chunks"])
-            # logging.info(f"Sales Agent context text: {context_txt}")
+            ##logging.info(f"Sales Agent context text: {context_txt}")
+            #logging.info("calling sales agent")
             reply = await run_sales_agent(req.query, context_txt, conv_summary)
             # logging.info(f"Sales Agent response: {reply}")
 
             # Detect product / service mentioned
             product_name  = ("SecureTrack" if "securetrack" in context_txt.lower()
                              else "BizRadar"  if "bizradar"   in context_txt.lower()
-                             else "")
+                             else "AI Receptionist" if "ai receptionist" in context_txt.lower()
+                                else "")
             service_name  = await detect_service(context_txt) or ""
 
             memory={
@@ -469,3 +542,12 @@ async def chat_controller(req: QueryRequest):
     except Exception as e:
         logging.exception("Chat controller crashed")
         raise HTTPException(status_code=500, detail=str(e))
+@message_router.get("/message/conversation", response_model=ConversationResponse)
+async def get_conversation_history_endpoint(user_id: str):
+    """
+    Returns the structured conversation history for a given user_id.
+    """
+    history = await get_conversation_history(user_id, as_strings=False)
+    # Ensure each turn is a dict with 'user' and 'bot' keys
+    turns = [ConversationTurn(**turn) for turn in history]
+    return ConversationResponse(user_id=user_id, history=turns)

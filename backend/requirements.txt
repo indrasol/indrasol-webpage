@@ -25,3 +25,9 @@ pytz==2025.2
 pyyaml==6.0.2
 RapidFuzz==3.13.0
 vapi_server_sdk==1.5.1
+
+
+
+fastapi-cache2[redis]==0.2.1
+redis==4.6.0
+

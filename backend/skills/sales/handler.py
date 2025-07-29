@@ -14,7 +14,8 @@ from services.openai_client_service import async_chat
 
 _LOG = logging.getLogger("skill.sales")
 
-PROMPT_TMPL = Path(__file__).with_name("prompt.md").read_text()
+# PROMPT_TMPL = Path(__file__).with_name("prompt.md").read_text()
+_PROMPT_TMPL = Path(__file__).with_name("prompt.md").read_text(encoding='utf-8')
 FALLBACK    = (
     "Indrasol can definitely help. Would you like a quick demo "
     "or a call with an expert?"
