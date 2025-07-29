@@ -154,6 +154,7 @@ const TYPING_SUGGESTIONS = [
   "Tell me about your AI and security solutions",
   "What is SecureTrack?",
   "What is BizRadar?",
+  "What is AI Receptionist?",
   "How can I contact your sales team?",
   "What industries do you serve?",
   "Tell me about your cloud engineering services",
