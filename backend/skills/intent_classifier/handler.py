@@ -17,8 +17,11 @@ INTENTS: List[str] = [
     "Ready to engage",
     "Objection",
 ]
-
-SYS_PROMPT = textwrap.dedent(open(__file__.replace("handler.py", "prompt.md")).read())
+#For Linux users,
+# SYS_PROMPT = textwrap.dedent(open(__file__.replace("handler.py", "prompt.md")).read())
+# For Windows and linux users
+with open(__file__.replace("handler.py", "prompt.md"), encoding='utf-8') as f:
+    SYS_PROMPT = textwrap.dedent(f.read())
 PROMPT_PATH = Path(__file__).parent.parent / "intent_classifier/intent_prompt.txt"
 # --------------------------------------------------------------------- #
 #  match() – run once per turn unless intent is already present

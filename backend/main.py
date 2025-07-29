@@ -12,12 +12,26 @@ from fastapi.responses import Response
 from services.sales_content_check import sales_content_changed
 import uvicorn
 
+from redis.asyncio import Redis
+from services.cache_service import init_redis_client
+from config.settings import REDIS_URL
+
 logging.basicConfig(level=logging.INFO)
 
 # Define lifespan manager first
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     try:
+    # ========== REDIS CACHE INITIALIZATION ==========
+        redis_url = REDIS_URL
+        logging.info(f"Connecting to Redis at {redis_url}")
+        if not redis_url:
+            raise ValueError("REDIS_URL is not set in the environment variables.")
+        redis = Redis.from_url(redis_url, decode_responses=True)
+        init_redis_client(redis)
+
+    
+
         global hashes
         hashes = load_hashes()
         index = get_pinecone_index()
@@ -59,6 +73,7 @@ async def lifespan(app: FastAPI):
         # Cleanup resources in finally block to ensure they run even on errors
         if hasattr(app.state, 'scheduler'):
             app.state.scheduler.shutdown()
+        await redis.close()
         pass
 
 # Create the FastAPI app once

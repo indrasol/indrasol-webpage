@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
-from knowledge_base.website_content import scrapped_website_content
+from knowledge_base.website_content import scrapped_website_content,get_urls
 from knowledge_base.sales_content import get_sales_content
-from services.bot_service import export_pinecone_to_markdown
-from services.bot_service import delete_all_pinecone_data
+from services.bot_service import export_pinecone_to_markdown,refresh_urls
+from services.bot_service import delete_all_pinecone_data,check_for_updates
 from agents.engagement_agent import run_engagement_agent
 router = APIRouter()
 
@@ -25,6 +25,18 @@ def retrieve_data_endpoint():
 def delete_data_endpoint():
     delete_all_pinecone_data()
     return JSONResponse(content={"message": "All Pinecone data deleted successfully"})
+@router.get("/check_updates")
+async def check_updates_endpoint():
+    # Call the function to check for updates
+    data= await check_for_updates()
+    return JSONResponse(content={"message": "Update check initiated", "data": data})
+@router.get("/refresh_urls")
+async def refresh_urls_endpoint():
+    # This function can be used to refresh URLs if needed
+    urls = get_urls()
+    data = await refresh_urls(urls)
+    return JSONResponse(content={"message": "URLs refreshed successfully", "data": data})
+
 @router.post("/engagement")
 async def engagement_endpoint(request: Request):
     data = await request.json()
