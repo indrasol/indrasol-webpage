@@ -18,3 +18,10 @@ class ChatResponse(BaseModel):
 #     latency_ms:   int
 #     error:        str | None = None
 #     meta:         dict = {}
+class ConversationTurn(BaseModel):
+    user: Optional[str] = None
+    bot: Optional[str] = None
+
+class ConversationResponse(BaseModel):
+    user_id: str
+    history: List[ConversationTurn]

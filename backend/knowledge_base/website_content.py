@@ -19,8 +19,10 @@ def get_urls():
     "https://indrasol.com/products",
     "https://indrasol.com/Products/Bizradar",
     "https://indrasol.com/Products/Securetrack",
+    "https://indrasol.com/Products/AiReceptionist",
     "https://indrasol.com/Resources/blogs2",
     "https://indrasol.com/Resources/whitepaper",
+    "https://indrasol.com/Resources/case-studies",
     "https://indrasol.com/company",
     "https://indrasol.com/contact",
     "https://indrasol.com/company/locations"

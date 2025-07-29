@@ -19,6 +19,28 @@ Powered by RapidFuzz (≈300 kB, MIT, SIMD) so each call is <1 ms.
 from rapidfuzz import fuzz
 
 # ---------------------------------------------------------------------------
+# Greetings
+# ---------------------------------------------------------------------------
+GREETING_KEYWORDS = {
+    "hi":         "Hi",
+    "hello":      "Hello",
+    "hey":        "Hey",
+    "greetings":  "Greetings",
+    "howdy":     "Howdy",
+    "yo":         "Yo",
+    "good morning": "Good morning",
+    "good afternoon": "Good afternoon",
+    "good evening": "Good evening",
+    "welcome":    "Welcome",
+    "hi there":   "Hi there",
+    "hello there": "Hello there",
+    "hey there":  "Hey there",
+    "greetings!": "Greetings!",
+    "how's it going": "How's it going?",
+    "what's up":  "What's up?",
+}
+
+# ---------------------------------------------------------------------------
 # Product / Service keyword maps
 # ---------------------------------------------------------------------------
 PRODUCT_KEYWORDS = {
@@ -125,3 +147,38 @@ def is_call_request(text: str) -> bool:
 def is_positive_response(text: str) -> bool:
     """True if user answers with a positive confirmation (yes/ok/… )."""
     return fuzzy_contains(text, POSITIVE_WORDS)
+# def is_greeting(text: str) -> bool:
+#     """True if user greets the bot with a 'hi', 'hello', etc."""
+#     return fuzzy_contains(text, GREETING_KEYWORDS.keys())
+# def is_greeting(text: str) -> bool:
+#     """
+#     Returns True if user input is a short, clear greeting.
+#     Prevents false matches for longer queries.
+#     """
+#     normalized = text.strip().lower()
+#     if len(normalized.split()) > 4:
+#         return False
+
+#     return fuzzy_contains(normalized, list(GREETING_KEYWORDS.keys()), threshold=90)
+def is_greeting(text: str) -> bool:
+    """
+    Returns True if user input is a short, clear greeting.
+    Prevents false matches for longer queries.
+    """
+    normalized = text.strip().lower()
+
+    # If it's a long message, it's likely not just a greeting
+    if len(normalized.split()) > 4:
+        return False
+
+    # Exact match
+    if normalized in GREETING_KEYWORDS:
+        return True
+
+    # Optionally, check if any token matches a known greeting
+    for keyword in GREETING_KEYWORDS:
+        if keyword in normalized:
+            if len(normalized.split()) <= len(keyword.split()) + 1:
+                return True
+
+    return False

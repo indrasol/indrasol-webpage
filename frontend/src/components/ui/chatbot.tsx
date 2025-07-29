@@ -10,6 +10,9 @@ import { CallFormOverlay } from "./callFormOverlay";
 import { SpeechOverlay, type SpeechRecognition, type SpeechRecognitionEvent, type SpeechRecognitionErrorEvent } from "./speechOverlay";
 import QuickActionButtons from "./QuickActionButtons";
 
+import { conversationService } from "../../services/conversationService";
+import { API_ENDPOINTS } from "@/config";
+
 // Extend Message type to include optional originalText and isTyping
 type Message = BaseMessage & {
   originalText?: string;
@@ -174,6 +177,8 @@ export const ChatBot: React.FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [hovering, setHovering] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [hasReopened, setHasReopened] = useState(false);
   const [newMessage, setNewMessage] = useState<string>("");
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -197,6 +202,8 @@ export const ChatBot: React.FC = () => {
   const [showCallForm, setShowCallForm] = useState(false);
   const [quickActionPending, setQuickActionPending] = useState(false);
 
+  const [engagementTriggered, setEngagementTriggered] = useState(false);
+  const [welcomeBackShown, setWelcomeBackShown] = useState(false);
   // Ensure privacy consent prompt appears when chat opens
   useEffect(() => {
     if (isOpen) {
@@ -317,6 +324,7 @@ export const ChatBot: React.FC = () => {
       setEmailSending(false);
       setEmailStage(0);
       closeSpeechOverlay();
+      setEngagementTriggered(false); // Reset so engagement can trigger again on next open
     }
   }, [isOpen]);
 
@@ -474,6 +482,90 @@ export const ChatBot: React.FC = () => {
       setFilteredSuggestions([]);
     }
   };
+  // Place this above your return statement in the ChatBot component:
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
+  };
+
+  useEffect(() => {
+  if (isOpen) {
+    (async () => {
+      const { userId: uid } = await chatService.bootstrapChat();
+      setUserId(uid);
+
+      const isNewUser =
+        !localStorage.getItem("indra_is_new_user") ||
+        localStorage.getItem("indra_is_new_user") === "true";
+
+      if (isNewUser) {
+        console.log("🆕 New user detected");
+        localStorage.setItem("indra_is_new_user", "false");
+      } else {
+        console.log("🔁 Returning user detected");
+      }
+
+      // Get chat history
+      const historyMessages = await conversationService.getHistory(uid);
+      console.log("Fetched conversation history:", historyMessages);
+
+      const returningPhrases = [
+        "welcome back",
+        "hello again",
+        "good to see you again",
+        "nice to have you back",
+        "returned to see you",
+        "great to see you again",
+        "how can i assist you today",
+      ];
+
+      const lastMessage = historyMessages[historyMessages.length - 1];
+      const isWelcomeMessage =
+        lastMessage?.sender === "bot" &&
+        returningPhrases.some((phrase) =>
+          lastMessage.text?.toLowerCase().includes(phrase)
+        );
+
+      if (historyMessages.length > 0) {
+        const taggedHistory = historyMessages.map((msg, index) => ({
+          ...msg,
+          isHistory: true,
+          isTyping:
+            isWelcomeMessage && index === historyMessages.length - 1,
+        }));
+        setMessages(taggedHistory);
+      }
+
+      const alreadyWelcomed =
+        lastMessage?.sender === "bot" &&
+        returningPhrases.some((phrase) =>
+          lastMessage.text?.toLowerCase().includes(phrase)
+        );
+
+      if (!isNewUser && !engagementTriggered && !alreadyWelcomed) {
+        console.log("💬 Sending _welcome_back_ message for returning user");
+
+        const response = await chatService.sendMessage("", historyMessages, true);
+
+        if (response && response.botReply) {
+          const botMsg = { ...response.botReply, isTyping: true };
+          setMessages((prev) => [...prev, botMsg]);
+        }
+
+        setEngagementTriggered(true);
+      }
+    })();
+  } else {
+    setEngagementTriggered(false);
+  }
+}, [isOpen]);
+
+
+
+
+
 
   return (
     <>
@@ -588,7 +680,7 @@ export const ChatBot: React.FC = () => {
                             <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                           </svg>
                         </div>
-                        <h4 className="text-gray-700 font-semibold mb-2 text-lg">How can I help you today?</h4>
+                        <h4 className="text-gray-700 font-semibold mb-2 text-lg">{getGreeting()}! How can I help you today?</h4>
                         <p className="text-gray-500 text-sm mb-4">Select an option below or type your question</p>
                       </div>
                       <div className="grid gap-4 w-full max-w-lg mx-auto">

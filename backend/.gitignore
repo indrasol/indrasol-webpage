@@ -2,4 +2,6 @@
 .venv/
 __pycache__/
 .env/
+#.env
+backend/.env
 .web_content/

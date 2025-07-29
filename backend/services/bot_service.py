@@ -265,6 +265,40 @@ async def retrieve_relevant_chunks(query, top_k=5):
     results = index.query(vector=query_embedding, top_k=top_k, include_metadata=True)
     return [match["metadata"]["text"] for match in results["matches"]]
 
+# def export_pinecone_to_markdown(output_file="pinecone_content.md"):
+#     try:
+#         index = get_pinecone_index()
+#         stats = index.describe_index_stats()
+#         logging.info(f"Exporting Pinecone data (vectors: {stats.get('total_vector_count', 'N/A')})")
+
+#         all_texts_by_url = {}
+
+#         # You'll need to paginate through all items in Pinecone (simulate with a dummy vector if needed)
+#         dummy_vector = [0.0] * stats['dimension']
+#         results = index.query(
+#             vector=dummy_vector,
+#             top_k=10000,
+#             include_metadata=True
+#         )
+
+#         for match in results.get("matches", []):
+#             metadata = match.get("metadata", {})
+#             text = metadata.get("text", "")
+#             url = metadata.get("url", "unknown-url")
+#             if url not in all_texts_by_url:
+#                 all_texts_by_url[url] = []
+#             all_texts_by_url[url].append(text)
+
+#         # Write to markdown
+#         with open(output_file, "w", encoding="utf-8") as f:
+#             for url, chunks in all_texts_by_url.items():
+#                 f.write(f"# Content from: {url}\n\n")
+#                 for chunk in chunks:
+#                     f.write(f"{chunk}\n\n---\n\n")
+#         logging.info(f"Markdown file '{output_file}' created successfully.")
+
+#     except Exception as e:
+#         logging.error(f"Failed to export Pinecone data to markdown: {e}")
 def export_pinecone_to_markdown(output_file="pinecone_content.md"):
     try:
         index = get_pinecone_index()
@@ -273,21 +307,25 @@ def export_pinecone_to_markdown(output_file="pinecone_content.md"):
 
         all_texts_by_url = {}
 
-        # You'll need to paginate through all items in Pinecone (simulate with a dummy vector if needed)
-        dummy_vector = [0.0] * stats['dimension']
+        # Instead of querying with zero vector, use filter (if you can)
+        dummy_vector = [0.01] * stats['dimension']  # small non-zero vector
+
         results = index.query(
             vector=dummy_vector,
             top_k=10000,
             include_metadata=True
         )
 
-        for match in results.get("matches", []):
+        matches = results.get("matches", [])
+        if not matches:
+            logging.warning("No matches returned from Pinecone query.")
+
+        for match in matches:
             metadata = match.get("metadata", {})
             text = metadata.get("text", "")
             url = metadata.get("url", "unknown-url")
-            if url not in all_texts_by_url:
-                all_texts_by_url[url] = []
-            all_texts_by_url[url].append(text)
+            if url and text:
+                all_texts_by_url.setdefault(url, []).append(text)
 
         # Write to markdown
         with open(output_file, "w", encoding="utf-8") as f:
@@ -295,10 +333,11 @@ def export_pinecone_to_markdown(output_file="pinecone_content.md"):
                 f.write(f"# Content from: {url}\n\n")
                 for chunk in chunks:
                     f.write(f"{chunk}\n\n---\n\n")
-        logging.info(f"Markdown file '{output_file}' created successfully.")
 
+        logging.info(f"Markdown file '{output_file}' created successfully.")
     except Exception as e:
-        logging.error(f"Failed to export Pinecone data to markdown: {e}")
+        logging.exception(f"Failed to export Pinecone content: {e}")
+
 def delete_all_pinecone_data():
     """
     Deletes all vectors from the Pinecone index.
