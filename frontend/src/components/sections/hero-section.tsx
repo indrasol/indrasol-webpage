@@ -46,8 +46,25 @@ export function HeroSection() {
               </Link>
             </div>
             
+            {/* Long Term Partnership Section */}
+            <div className="mt-12 mb-6">
+              <p className="text-sm text-gray-600 mb-4 font-medium">Long Term Partnership:</p>
+              <div className="flex flex-wrap gap-6 items-center">
+                <img 
+                  src="/logos/metalogo.png" 
+                  alt="Meta" 
+                  className="h-16 opacity-80 hover:opacity-100 transition-opacity"
+                />
+                <img 
+                  src="/logos/cisco.png" 
+                  alt="Cisco" 
+                  className="h-16 opacity-80 hover:opacity-100 transition-opacity"
+                />
+              </div>
+            </div>
+
             {/* Trusted Partners/Clients Logos Section */}
-            <div className="mt-12 mb-0 lg:mb-12">
+            <div className="mt-8 mb-0 lg:mb-12">
               <p className="text-sm text-gray-600 mb-4 font-medium">Certified by:</p>
               <div className="flex flex-wrap gap-8 items-center">
                 <img 

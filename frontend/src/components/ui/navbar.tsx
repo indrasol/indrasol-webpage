@@ -58,18 +58,28 @@ const navigate = useNavigate();
   return (
     <header className="w-full bg-white/95 shadow-sm fixed top-0 left-0 right-0 z-50 backdrop-blur-sm">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/" className="flex items-end gap-0">
-          <div onClick={handleLogoClick} className="flex items-end gap-1 cursor-pointer">
-            <img 
-              src="/indrasol_logo_high_res.png" 
-              alt="Indrasol Logo" 
-              className="h-7 w-7 sm:h-9 sm:w-9"
-            />
-            <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue bg-clip-text text-transparent font-bold text-3xl sm:text-4xl tracking-tight leading-none relative top-[3px] sm:top-[6px]">Indrasol</span>
-          </div>
-        </Link>
+        <div className="flex items-end gap-4">
+          <Link to="/" className="flex items-end gap-0">
+            <div onClick={handleLogoClick} className="flex items-end gap-1 cursor-pointer">
+              <img 
+                src="/indrasol_logo_high_res.png" 
+                alt="Indrasol Logo" 
+                className="h-7 w-7 sm:h-9 sm:w-9"
+              />
+              <span className="bg-gradient-to-r from-indrasol-blue to-indrasol-blue bg-clip-text text-transparent font-bold text-3xl sm:text-4xl tracking-tight leading-none relative top-[3px] sm:top-[6px]">Indrasol</span>
+            </div>
+          </Link>
           
-        
+          {/* Phone Number - Desktop */}
+          <a 
+            href="tel:+14244046372" 
+            className="hidden md:flex items-center bg-gradient-to-r from-indrasol-blue/10 to-indrasol-blue/5 text-indrasol-blue font-semibold px-3 py-1.5 rounded-lg border border-indrasol-blue/20 hover:bg-gradient-to-r hover:from-indrasol-blue hover:to-indrasol-blue hover:text-white hover:shadow-lg hover:shadow-indrasol-blue/25 transition-all duration-300 transform hover:scale-[1.02] text-sm"
+          >
+            <PhoneCall className="mr-2 h-3.5 w-3.5" />
+            +1 424 404 6372
+          </a>
+        </div>
+
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
           <NavLinks className="text-gray-700 font-medium hover:text-indrasol-blue transition-colors" />
@@ -95,6 +105,13 @@ const navigate = useNavigate();
       {isMenuOpen && (
         <div className="md:hidden bg-white shadow-lg">
           <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
+            <a 
+              href="tel:+14244046372" 
+              className="flex items-center bg-gradient-to-r from-indrasol-blue/10 to-indrasol-blue/5 text-indrasol-blue font-semibold px-4 py-3 rounded-lg border border-indrasol-blue/20 hover:bg-gradient-to-r hover:from-indrasol-blue hover:to-indrasol-blue hover:text-white hover:shadow-lg hover:shadow-indrasol-blue/25 transition-all duration-300 transform hover:scale-[1.02] mb-2"
+            >
+              <PhoneCall className="mr-2 h-4 w-4" />
+              +1 424 404 6372
+            </a>
             <NavLinks className="block py-2 text-gray-700 hover:text-indrasol-blue transition-colors" isMobile={true} />
             <Link 
               to="/contact" 
