@@ -10,6 +10,7 @@ import { ClientsSection } from "@/components/sections/clients-section";
 import { Footer } from "@/components/ui/footer";
 import { BackToTop } from "@/components/ui/back-to-top";
 import { ChatBot } from "../components/ui/chatbot"; // Update the import path to the correct location
+import { FloatingSocialBar } from "@/components/ui/floating-social-bar";
 import PartnersSection from "@/components/sections/partners-section";
 import AfterHeroSection from "@/components/sections/afterhero-section";
 import TestimonialsSection from "@/components/sections/testimonials-section";
@@ -33,6 +34,7 @@ const Index = () => {
       <Footer />
       <BackToTop /> 
       <ChatBot /> {/* Add the ChatBot component here */}
+      <FloatingSocialBar /> {/* Add the Floating Social Bar component here */}
     </div>
   );
 };
