@@ -85,7 +85,7 @@ export function Footer() {
                   </a>
 
                   <a
-                    href="https://www.instagram.com/indrasol_sol/"
+                    href="https://www.instagram.com/indrasol_tech/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="group relative p-3 bg-gradient-to-r from-[#E4405F] via-[#F56040] to-[#FFDC80] rounded-2xl hover:shadow-2xl hover:shadow-pink-500/25 transition-all duration-300 transform hover:scale-110 hover:-translate-y-1"
