@@ -82,6 +82,11 @@ export function HeroSection() {
                   alt="Oracle Partner" 
                   className="h-20 opacity-80 hover:opacity-100 transition-opacity"
                 />
+                <img 
+                  src="/nmsdc.jpeg" 
+                  alt="NMSDC - National Minority Supplier Development Council" 
+                  className="h-20 opacity-80 hover:opacity-100 transition-opacity"
+                />
               </div>
             </div>
           </div>
