@@ -366,6 +366,26 @@ const Products = () => {
       link: "/Products/AiReceptionist",
       accentColor: "indrasol-blue",
       isNew: true
+    },
+    {
+      icon: CheckCircle,
+      title: "TasksMate",
+      tagline: "Organize. Track. Achieve.",
+      description: "Turn chaos into clarity. Empower your team with a unified workspace that keeps projects moving, ideas flowing, and bugs squashed — all in record time. Your Sidekick for Every Tick.",
+      features: [
+        "Task categorization and priority setting",
+        "Deadline reminders and notifications",
+        "Progress tracking and analytics",
+        "Team collaboration and task sharing",
+        "Intuitive drag-and-drop interface"
+      ],
+      stats: [
+        { value: "99%", label: "Task Completion" },
+        { value: "50%", label: "Time Saved" }
+      ],
+      link: "/Products/TasksMate",
+      accentColor: "indrasol-blue",
+      isNew: true
     }
   ];
 
@@ -427,7 +447,7 @@ const Products = () => {
             </div>
 
             {/* Products grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
               {products.map((product, index) => (
                 <ProductCard key={index} {...product} />
               ))}
