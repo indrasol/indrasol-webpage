@@ -52,9 +52,23 @@ const BizRadarHero = () => {
               </span>
             </div>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
-              <span className="text-indrasol-blue">Bizradar</span>
-              <span className="block mt-1">Discover. Analyze. Win.</span>
+              <div className="flex items-center gap-1 sm:gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 text-blue-600 flex-shrink-0 transition-transform group-hover:rotate-12 duration-300">
+                  <path d="M19.07 4.93A10 10 0 0 0 6.99 3.34"></path>
+                  <path d="M4 6h.01"></path>
+                  <path d="M2.29 9.62A10 10 0 1 0 21.31 8.35"></path>
+                  <path d="M16.24 7.76A6 6 0 1 0 8.23 16.67"></path>
+                  <path d="M12 18h.01"></path>
+                  <path d="M17.99 11.66A6 6 0 0 1 15.77 16.67"></path>
+                  <circle cx="12" cy="12" r="2"></circle>
+                  <path d="m13.41 10.59 5.66-5.66"></path>
+                </svg>
+                <span className="text-blue-600 font-sora font-bold">Bizradar</span>
+              </div>
             </h1>
+            <div className="text-xl sm:text-2xl md:text-3xl font-semibold text-indrasol-blue mb-4">
+              Discover. Analyze. Win.
+            </div>
             <p className="text-lg md:text-xl text-gray-700 max-w-2xl">
               AI-driven contract tracking dashboard that automates the discovery
               and analysis of cybersecurity, AI, and data engineering projects

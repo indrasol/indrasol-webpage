@@ -325,28 +325,63 @@ function NavLinks({ className, isMobile = false }: { className?: string, isMobil
                   to="/Products/Bizradar" 
                   className="flex items-center py-2 text-sm text-gray-700 hover:text-indrasol-blue"
                 >
-                  <Activity className="mr-2 h-4 w-4 text-indrasol-blue stroke-4" />
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4 text-blue-600 stroke-4">
+                    <path d="M19.07 4.93A10 10 0 0 0 6.99 3.34"></path>
+                    <path d="M4 6h.01"></path>
+                    <path d="M2.29 9.62A10 10 0 1 0 21.31 8.35"></path>
+                    <path d="M16.24 7.76A6 6 0 1 0 8.23 16.67"></path>
+                    <path d="M12 18h.01"></path>
+                    <path d="M17.99 11.66A6 6 0 0 1 15.77 16.67"></path>
+                    <circle cx="12" cy="12" r="2"></circle>
+                    <path d="m13.41 10.59 5.66-5.66"></path>
+                  </svg>
                   Bizradar
                 </Link>
                 <Link 
                   to="/Products/Securetrack" 
                   className="flex items-center py-2 text-sm text-gray-700 hover:text-indrasol-blue"
                 >
-                  <Lock className="mr-2 h-4 w-4 text-indrasol-blue stroke-4" />
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4 stroke-4" style={{color: 'rgb(62, 207, 142)'}}>
+                    <circle cx="6" cy="19" r="3"></circle>
+                    <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"></path>
+                    <circle cx="18" cy="5" r="3"></circle>
+                  </svg>
                   Securetrack
                 </Link>
                 <Link 
                   to="/Products/AiReceptionist" 
                   className="flex items-center py-2 text-sm text-gray-700 hover:text-indrasol-blue"
                 >
-                  <PhoneCall className="mr-2 h-4 w-4 text-indrasol-blue stroke-4" />
+                  <div className="mr-2 relative w-4 h-4">
+                    {/* Yellow Background with White Bot Icon */}
+                    <div className="w-4 h-4 bg-yellow-400 rounded flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-2 w-2 text-white">
+                        <path d="M12 8V4H8"/>
+                        <rect width="16" height="12" x="4" y="8" rx="2"/>
+                        <path d="M2 14h2"/>
+                        <path d="M20 14h2"/>
+                        <path d="M15 13v2"/>
+                        <path d="M9 13v2"/>
+                      </svg>
+                    </div>
+                    {/* Green Call Icon - Top Right Corner */}
+                    <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-1 w-1 text-white">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0-0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                      </svg>
+                    </div>
+                  </div>
                   AI Receptionist
                 </Link>
                 <Link 
                   to="/Products/TasksMate" 
                   className="flex items-center py-2 text-sm text-gray-700 hover:text-indrasol-blue"
                 >
-                  <CheckCircle className="mr-2 h-4 w-4 text-indrasol-blue stroke-4" />
+                  <div className="mr-2 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-2 w-2 text-white">
+                      <path d="M20 6 9 17l-5-5"></path>
+                    </svg>
+                  </div>
                   TasksMate
                 </Link>
               </div>
@@ -548,28 +583,63 @@ function NavLinks({ className, isMobile = false }: { className?: string, isMobil
                     to="/Products/Bizradar" 
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
-                    <Activity className="mr-2 h-4 w-4 text-indrasol-blue stroke-4" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4 text-blue-600 stroke-4">
+                      <path d="M19.07 4.93A10 10 0 0 0 6.99 3.34"></path>
+                      <path d="M4 6h.01"></path>
+                      <path d="M2.29 9.62A10 10 0 1 0 21.31 8.35"></path>
+                      <path d="M16.24 7.76A6 6 0 1 0 8.23 16.67"></path>
+                      <path d="M12 18h.01"></path>
+                      <path d="M17.99 11.66A6 6 0 0 1 15.77 16.67"></path>
+                      <circle cx="12" cy="12" r="2"></circle>
+                      <path d="m13.41 10.59 5.66-5.66"></path>
+                    </svg>
                     Bizradar
                   </Link>
                   <Link 
                     to="/Products/Securetrack" 
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
-                    <Lock className="mr-2 h-4 w-4 text-indrasol-blue stroke-4" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-4 w-4 stroke-4" style={{color: 'rgb(62, 207, 142)'}}>
+                      <circle cx="6" cy="19" r="3"></circle>
+                      <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"></path>
+                      <circle cx="18" cy="5" r="3"></circle>
+                    </svg>
                     Securetrack
                   </Link>
                   <Link 
                     to="/Products/AiReceptionist" 
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
-                    <PhoneCall className="mr-2 h-4 w-4 text-indrasol-blue stroke-4" />
+                    <div className="mr-2 relative w-4 h-4">
+                      {/* Yellow Background with White Bot Icon */}
+                      <div className="w-4 h-4 bg-yellow-400 rounded flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-2 w-2 text-white">
+                          <path d="M12 8V4H8"/>
+                          <rect width="16" height="12" x="4" y="8" rx="2"/>
+                          <path d="M2 14h2"/>
+                          <path d="M20 14h2"/>
+                          <path d="M15 13v2"/>
+                          <path d="M9 13v2"/>
+                        </svg>
+                      </div>
+                      {/* Green Call Icon - Top Right Corner */}
+                      <div className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-green-500 rounded-full flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-1 w-1 text-white">
+                          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0-0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                      </div>
+                    </div>
                     AI Receptionist
                   </Link>
                   <Link 
                     to="/Products/TasksMate" 
                     className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                   >
-                    <CheckCircle className="mr-2 h-4 w-4 text-indrasol-blue stroke-4" />
+                    <div className="mr-2 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-2 w-2 text-white">
+                        <path d="M20 6 9 17l-5-5"></path>
+                      </svg>
+                    </div>
                     TasksMate
                   </Link>
                 </div>

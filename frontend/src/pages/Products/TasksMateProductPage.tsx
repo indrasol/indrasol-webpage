@@ -53,18 +53,30 @@ const TasksMateHero = () => {
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
-              <div className="flex items-center gap-3 sm:gap-4">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 lg:h-7 lg:w-7 text-white">
+              <div className="flex items-center gap-1 sm:gap-2">
+                <div className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3 sm:h-3.5 sm:w-3.5 md:h-4 md:w-4 lg:h-5 lg:w-5 text-white">
                     <path d="M20 6 9 17l-5-5"></path>
                   </svg>
                 </div>
-                <span className="font-sora font-bold text-black">TasksMate</span>
+                <div className="flex flex-col">
+                  <div className="flex items-baseline">
+                    <span className="font-sora font-bold text-black">TasksMate</span>
+                    <span className="text-sm sm:text-base md:text-lg text-gray-600 font-medium ml-2 flex items-center">
+                      Your Sidekick for every Tick
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1 h-3 w-3 sm:h-4 sm:w-4 text-gray-600">
+                        <path d="M20 6 9 17l-5-5"></path>
+                      </svg>
+                    </span>
+                  </div>
+                </div>
               </div>
-              <span className="block mt-1">Organize. Track. Achieve.</span>
             </h1>
+            <div className="text-xl sm:text-2xl md:text-3xl font-semibold text-indrasol-blue mb-4">
+              Organize. Track. Achieve.
+            </div>
                         <p className="text-base sm:text-lg md:text-xl text-gray-700 max-w-2xl">
-              Turn chaos into clarity. Empower your team with a unified workspace that keeps projects moving, ideas flowing, and bugs squashed — all in record time. <strong>Your Sidekick for every Tick.</strong>
+                        Order and Accelerate your work. Let the Ideas flow and Bugs go. 
             </p>
             
             {/* Mobile image above buttons */}
