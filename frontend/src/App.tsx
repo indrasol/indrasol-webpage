@@ -18,6 +18,7 @@ import Products from "./pages/Products";
 import BizRadarProductPage from "./pages/Products/BizRadarProductPage";
 import SecureTrackProductPage from "./pages/Products/SecureTrackProductPage";
 import AiReceptionistProductPage from "./pages/Products/AiReceptionistProductPage";
+import TasksMateProductPage from "./pages/Products/TasksMateProductPage";
 import BlogPageSection from "./pages/Resources/BlogPageSection";
 import BlogDetailPage from "./pages/Resources/BlogDetailPage";
 import WhitePaperSection from "./pages/Resources/WhitePaperSection";
@@ -77,6 +78,7 @@ const App = () => (
           <Route path="/Products/Bizradar" element={<BizRadarProductPage />} />
           <Route path="/Products/Securetrack" element={<SecureTrackProductPage />} />
           <Route path="/Products/AiReceptionist" element={<AiReceptionistProductPage />} />
+          <Route path="/Products/TasksMate" element={<TasksMateProductPage />} />
           <Route path="/Resources/blogs2" element={<BlogPageSection />} />
           <Route path="/Resources/blog/:slug" element={<BlogDetailPage />} />
           <Route path="/Resources/case-studies" element={<CaseStudies />} />
