@@ -23,7 +23,8 @@ import {
   MapPin,
   Cpu,
   Code,
-  PhoneCall
+  PhoneCall,
+  CheckCircle
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -341,6 +342,13 @@ function NavLinks({ className, isMobile = false }: { className?: string, isMobil
                   <PhoneCall className="mr-2 h-4 w-4 text-indrasol-blue stroke-4" />
                   AI Receptionist
                 </Link>
+                <Link 
+                  to="/Products/TasksMate" 
+                  className="flex items-center py-2 text-sm text-gray-700 hover:text-indrasol-blue"
+                >
+                  <CheckCircle className="mr-2 h-4 w-4 text-indrasol-blue stroke-4" />
+                  TasksMate
+                </Link>
               </div>
             )}
           </div>
@@ -556,6 +564,13 @@ function NavLinks({ className, isMobile = false }: { className?: string, isMobil
                   >
                     <PhoneCall className="mr-2 h-4 w-4 text-indrasol-blue stroke-4" />
                     AI Receptionist
+                  </Link>
+                  <Link 
+                    to="/Products/TasksMate" 
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <CheckCircle className="mr-2 h-4 w-4 text-indrasol-blue stroke-4" />
+                    TasksMate
                   </Link>
                 </div>
               </div>

@@ -42,7 +42,7 @@ LOCATIONS = [
 URLS = {
     "bizradar":     "https://indrasol.com/Products/Bizradar",
     "securetrack":  "https://indrasol.com/Products/Securetrack",
-    "ai receptionist": "http://localhost:8080/Products/AiReceptionist",
+    "ai receptionist": "https://indrasol.com/Products/AiReceptionist",
 
     # ── services ────────────────────────────────────────────────────────
     "ai solutions":                    "https://indrasol.com/services/aisolutions",
