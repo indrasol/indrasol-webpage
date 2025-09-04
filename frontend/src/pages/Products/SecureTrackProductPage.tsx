@@ -54,9 +54,20 @@ const SecureTrackHero = () => {
               </span>
             </div>
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
-              <span className="text-indrasol-blue">SecureTrack</span>
-              <span className="block mt-1">Analyze. Identify. Secure.</span>
+              <div className="flex items-center gap-1 sm:gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 flex-shrink-0" style={{color: 'rgb(62, 207, 142)'}}>
+                  <circle cx="6" cy="19" r="3"></circle>
+                  <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"></path>
+                  <circle cx="18" cy="5" r="3"></circle>
+                </svg>
+                <span className="font-sora font-bold hover:opacity-90 transition-opacity">
+                  Secure<span style={{color: 'rgb(62, 207, 142)'}}>Track</span>
+                </span>
+              </div>
             </h1>
+            <div className="text-xl sm:text-2xl md:text-3xl font-semibold text-indrasol-blue mb-4">
+              Analyze. Identify. Secure.
+            </div>
             <p className="text-lg md:text-xl text-gray-700 max-w-2xl">
               Intelligent security architecture design review application that
               analyzes diagrams, identifies gaps, and provides actionable
