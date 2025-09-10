@@ -114,7 +114,7 @@ const TasksMateHero = () => {
             
             <div className="flex justify-start pt-4 sm:pt-6">
               <a
-                href="https://mytasksmate.netlify.app/index"
+                href="https://tasksmate.indrasol.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group px-4 sm:px-6 py-3 bg-indrasol-blue text-white rounded-lg hover:bg-indrasol-blue/90 transition-all duration-300 inline-flex items-center justify-center shadow-lg shadow-indrasol-blue/20 text-sm sm:text-base"
@@ -128,7 +128,7 @@ const TasksMateHero = () => {
           {/* Desktop image */}
           <div className="hidden lg:block">
             <a
-              href="https://mytasksmate.netlify.app/index"
+              href="https://tasksmate.indrasol.com"
               target="_blank"
               rel="noopener noreferrer"
               className="block"
