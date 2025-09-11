@@ -15,7 +15,10 @@ import {
   Activity,
   Lock,
   BarChart,
-  PhoneCall
+  PhoneCall,
+  Heart,
+  Palette,
+  Camera
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Navbar } from "@/components/ui/navbar";
@@ -132,6 +135,16 @@ const ProductCard = ({
                   {customIcon ? customIcon : <Icon className="h-8 w-8 text-indrasol-blue group-hover:scale-110 transition-transform" strokeWidth={2} />}
                   <h3 className="text-xl font-bold">
                     Secure<span style={{color: 'rgb(62, 207, 142)'}}>Track</span>
+                  </h3>
+                </div>
+                {tagline && <p className="text-sm text-indrasol-blue font-medium">{tagline}</p>}
+              </div>
+            ) : title === "YaadonKeRang" ? (
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  {customIcon ? customIcon : <Icon className="h-8 w-8 text-indrasol-blue group-hover:scale-110 transition-transform" strokeWidth={2} />}
+                  <h3 className="text-xl font-bold">
+                    <span className="text-black">YaadonKe</span><span className="bg-gradient-to-r from-orange-800 via-red-700 to-red-800 bg-clip-text text-transparent">Rang</span>
                   </h3>
                 </div>
                 {tagline && <p className="text-sm text-indrasol-blue font-medium">{tagline}</p>}
@@ -386,7 +399,7 @@ const Products = () => {
       setIsVisible(false);
       
       setTimeout(() => {
-        setCurrentSet(prev => prev === 0 ? 1 : 0);
+        setCurrentSet(prev => prev === 2 ? 0 : prev + 1);
         setIsVisible(true);
       }, 800); // Wait for fade out to complete
       
@@ -522,6 +535,33 @@ const Products = () => {
           </svg>
         </div>
       )
+    },
+    {
+      icon: Heart,
+      title: "YaadonKeRang",
+      tagline: "Memories. Colors. Love.",
+      description: "A simple weekend project made with love. Capture and cherish your precious memories in vibrant, meaningful colors.",
+      features: [
+        "Made with love over a weekend",
+        "Beautiful and vibrant color palettes",
+        "Simple and minimalistic design",
+        "Focus on meaningful memories"
+      ],
+      stats: [
+        { value: "❤️", label: "Made with Love" },
+        { value: "🎨", label: "Beautiful Colors" }
+      ],
+      link: "/Products/YaadonKeRang",
+      accentColor: "indrasol-blue",
+      isNew: false,
+      customIcon: (
+        <div className="relative w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+          <Palette className="h-5 w-5 text-white" />
+          <div className="absolute -top-1 -right-1 w-3 h-3 bg-orange-600 rounded-full flex items-center justify-center">
+            <Camera className="h-1.5 w-1.5 text-white" />
+          </div>
+        </div>
+      )
     }
   ];
 
@@ -590,11 +630,17 @@ const Products = () => {
                   products.slice(0, 2).map((product, index) => (
                     <ProductCard key={`set1-${index}`} {...product} />
                   ))
-                ) : (
-                  // Second set: Show last 2 products
+                ) : currentSet === 1 ? (
+                  // Second set: Show next 2 products
                   products.slice(2, 4).map((product, index) => (
                     <ProductCard key={`set2-${index}`} {...product} />
                   ))
+                ) : (
+                  // Third set: Show last product
+                  <>
+                    <ProductCard key={`set3-0`} {...products[4]} />
+                    <div className="hidden md:block"></div> {/* Empty space for balance */}
+                  </>
                 )}
               </div>
               
@@ -602,6 +648,7 @@ const Products = () => {
               <div className="flex justify-center mt-8 space-x-2">
                 <div className={`w-3 h-3 rounded-full transition-colors duration-300 ${currentSet === 0 ? 'bg-indrasol-blue' : 'bg-gray-300'}`}></div>
                 <div className={`w-3 h-3 rounded-full transition-colors duration-300 ${currentSet === 1 ? 'bg-indrasol-blue' : 'bg-gray-300'}`}></div>
+                <div className={`w-3 h-3 rounded-full transition-colors duration-300 ${currentSet === 2 ? 'bg-indrasol-blue' : 'bg-gray-300'}`}></div>
               </div>
             </div>
 
