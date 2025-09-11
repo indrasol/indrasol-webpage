@@ -24,7 +24,10 @@ import {
   Cpu,
   Code,
   PhoneCall,
-  CheckCircle
+  CheckCircle,
+  Heart,
+  Palette,
+  Camera
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -384,6 +387,18 @@ function NavLinks({ className, isMobile = false }: { className?: string, isMobil
                   </div>
                   TasksMate
                 </Link>
+                <Link 
+                  to="/Products/YaadonKeRang" 
+                  className="flex items-center py-2 text-sm text-gray-700 hover:text-indrasol-blue"
+                >
+                  <div className="relative mr-2 w-4 h-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded flex items-center justify-center">
+                    <Palette className="h-2 w-2 text-white" />
+                    <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-orange-600 rounded-full flex items-center justify-center">
+                      <Camera className="h-0.5 w-0.5 text-white" />
+                    </div>
+                  </div>
+                  <span><span className="text-black">YaadonKe</span><span className="bg-gradient-to-r from-orange-800 via-red-700 to-red-800 bg-clip-text text-transparent">Rang</span></span>
+                </Link>
               </div>
             )}
           </div>
@@ -641,6 +656,18 @@ function NavLinks({ className, isMobile = false }: { className?: string, isMobil
                       </svg>
                     </div>
                     TasksMate
+                  </Link>
+                  <Link 
+                    to="/Products/YaadonKeRang" 
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <div className="relative mr-2 w-4 h-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded flex items-center justify-center">
+                      <Palette className="h-2 w-2 text-white" />
+                      <div className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-orange-600 rounded-full flex items-center justify-center">
+                        <Camera className="h-0.5 w-0.5 text-white" />
+                      </div>
+                    </div>
+                    <span><span className="text-black">YaadonKe</span><span className="bg-gradient-to-r from-orange-800 via-red-700 to-red-800 bg-clip-text text-transparent">Rang</span></span>
                   </Link>
                 </div>
               </div>
