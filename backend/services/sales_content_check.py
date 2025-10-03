@@ -1,7 +1,7 @@
 import os
 from hashlib import md5
 import asyncio
-from services.pinecone_service import query_pinecone
+from services.supabase_vector_service import query_supabase_vector
 _SALES_HASH_FILE = ".sales_hash"
 
 async def sales_content_changed() -> bool:

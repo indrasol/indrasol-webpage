@@ -1,6 +1,6 @@
 from __future__ import annotations
 import logging
-from services.pinecone_service import query_pinecone          # ← your existing helper
+from services.supabase_vector_service import query_supabase_vector          # ← supabase helper
 from mcp.schema import Skill, Turn, Conversation, Result
 
 _LOG = logging.getLogger("skill.rag_context")
@@ -11,8 +11,8 @@ def _needs_context(turn: Turn) -> bool:            # very lightweight filter
 
 async def _handle(turn: Turn, convo: Conversation) -> Result:
     filters = {}
-    website = await query_pinecone(turn.text, namespace="website", filters=filters)
-    matches = website or await query_pinecone(turn.text, namespace="sales", filters=filters)
+    website = await query_supabase_vector(turn.text, namespace="website", filters=filters)
+    matches = website or await query_supabase_vector(turn.text, namespace="sales", filters=filters)
 
     chunks  = [m["text"] for m in matches]
     meta    = {"rag_chunks": chunks[:6]}           # keep it small
