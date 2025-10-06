@@ -63,12 +63,12 @@ export function HeroSection() {
                 <img 
                   src="/logos/databricks_logo.svg" 
                   alt="Databricks" 
-                  className="h-16 opacity-80 hover:opacity-100 transition-opacity"
+                  className="h-12 opacity-80 hover:opacity-100 transition-opacity"
                 />
                 <img 
                   src="/logos/wiz_logo.svg" 
                   alt="Wiz" 
-                  className="h-16 opacity-80 hover:opacity-100 transition-opacity"
+                  className="h-10 opacity-80 hover:opacity-100 transition-opacity"
                 />
               </div>
             </div>
