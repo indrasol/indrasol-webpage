@@ -24,7 +24,7 @@ def retrieve_data_endpoint():
 @router.delete("/delete_data")
 def delete_data_endpoint():
     delete_all_pinecone_data()
-    return JSONResponse(content={"message": "All Pinecone data deleted successfully"})
+    return JSONResponse(content={"message": "All supabase_vector data deleted successfully"})
 @router.get("/check_updates")
 async def check_updates_endpoint():
     # Call the function to check for updates

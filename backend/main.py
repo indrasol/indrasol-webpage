@@ -4,7 +4,7 @@ import asyncio
 # from indra_bot import WebContentProcessor
 from routes_register import router as api_router
 from contextlib import asynccontextmanager
-from services.bot_service import initialize_website_content, initialize_sales_content, get_pinecone_index, load_hashes, check_for_updates, get_urls, check_index_stats
+from services.bot_service import initialize_website_content, initialize_sales_content, load_hashes, check_for_updates, get_urls, check_index_stats, get_namespace_counts
 # from backend.config.settings import PINECONE_API_KEY
 from apscheduler.schedulers.background import BackgroundScheduler   
 import logging
@@ -34,11 +34,10 @@ async def lifespan(app: FastAPI):
 
         global hashes
         hashes = load_hashes()
-        index = get_pinecone_index()
-        stats = index.describe_index_stats()
-        website_count = stats["namespaces"].get("website", {}).get("vector_count", 0)
-        sales_count   = stats["namespaces"].get("sales",   {}).get("vector_count", 0)
-        logging.info(f"Vector count : {stats['total_vector_count']}")
+        counts = get_namespace_counts()
+        website_count = counts["website"]
+        sales_count   = counts["sales"]
+        logging.info(f"Vector rows total: {counts['total']}")
         if website_count == 0:
             await initialize_website_content()
         if sales_count == 0:
