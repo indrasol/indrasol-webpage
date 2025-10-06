@@ -14,6 +14,7 @@ import { FloatingSocialBar } from "@/components/ui/floating-social-bar";
 import PartnersSection from "@/components/sections/partners-section";
 import AfterHeroSection from "@/components/sections/afterhero-section";
 import TestimonialsSection from "@/components/sections/testimonials-section";
+import { FAQSection } from "@/components/sections/faq-section";
 
 const Index = () => {
   return (
@@ -29,6 +30,7 @@ const Index = () => {
         {/* <BusinessUnitsSection /> */}
         <LocationsSection />
         <TestimonialsSection />
+        <FAQSection />
         <ContactSection />
       </main>
       <Footer />
