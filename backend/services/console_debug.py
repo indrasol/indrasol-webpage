@@ -1,9 +1,9 @@
 import asyncio
-from pinecone_service import query_pinecone
+from services.supabase_vector_service import query_supabase_vector
 
 
 async def debug_sales():
-    matches = await query_pinecone(
+    matches = await query_supabase_vector(
         query="cloud landing zones", 
         namespace="sales",
         filters={"category": {"$in": ["Cloud Engineering"]}},

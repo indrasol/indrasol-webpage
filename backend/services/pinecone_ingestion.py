@@ -1,23 +1,30 @@
 import os
 import uuid
-import pinecone
-import openai
+from supabase import create_client
+from openai import OpenAI
+from config.settings import SUPABASE_URL, SUPABASE_SERVICE_KEY, OPENAI_API_KEY
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
-pinecone.init(api_key=os.getenv("PINECONE_API_KEY"), environment=os.getenv("PINECONE_ENV"))
+openai_client = OpenAI(api_key=OPENAI_API_KEY)
+supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
-index = pinecone.Index(os.getenv("PINECONE_INDEX"))
+def embed(text: str):
+    return openai_client.embeddings.create(input=text, model="text-embedding-3-small").data[0].embedding
 
 def chunk_and_upload(docs: list):
-    batch = []
+    rows = []
     for doc in docs:
-        embedding = openai.Embedding.create(input=[doc['text']], model="text-embedding-3-small")['data'][0]['embedding']
-        batch.append({
+        embedding = embed(doc['text'])
+        rows.append({
             "id": str(uuid.uuid4()),
-            "values": embedding,
-            "metadata": doc
+            "namespace": doc.get("namespace", "sales"),
+            "text": doc["text"],
+            "source": doc.get("source"),
+            "category": doc.get("category"),
+            "type": doc.get("type"),
+            "embedding": embedding
         })
-    index.upsert(batch)
+    if rows:
+        supabase.table("documents").upsert(rows).execute()
 
 # Sample ingestion content
 docs = [

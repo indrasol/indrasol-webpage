@@ -7,7 +7,7 @@ priority: 80                  # fetch before intent / summariser
 timeout: 8                    # seconds
 
 description_for_model: |
-  Retrieves the top-k factual chunks from the Pinecone vector DB that are
+  Retrieves the top-k factual chunks from the supabase_vector DB that are
   semantically similar to the visitor’s current question.  
   Returns JSON: {"chunks":[text1, text2, ...]}
 
