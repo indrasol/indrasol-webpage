@@ -3,6 +3,7 @@ from pathlib import Path
 from services.bot_response_formatter_md import ensure_markdown
 from services.cache_service import async_cache_workflow
 import logging
+from config.settings import OPENAI_MODEL
 
 PROMPT_PATH = Path(__file__).parent.parent / "prompts/objection_prompt.txt"
 
@@ -19,7 +20,7 @@ async def run_objection_agent(user_message: str, context: str = "", history: str
         f"Your Response:"
     )
     async def objection_func(prompt):
-        return await run_openai_prompt(prompt, model="gpt-4o-mini")
+        return await run_openai_prompt(prompt, model=OPENAI_MODEL)
     response, cache_source, response_time = await async_cache_workflow(prompt, objection_func)
     logging.info(f"Objection Agent Greeting response: {response} (Cache Source: {cache_source}, Response Time: {response_time:.4f}s)")
 

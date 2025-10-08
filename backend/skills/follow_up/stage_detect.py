@@ -8,6 +8,7 @@ import re, logging
 from typing import Dict, Literal
 from email_validator import validate_email, EmailNotValidError
 from services.openai_service import run_openai_prompt
+from config.settings import OPENAI_MODEL
 
 _LOG = logging.getLogger("skill.follow_up.stage")
 
@@ -44,7 +45,7 @@ async def _llm_classify(snippet:str)->str:
         "[name, email, company, message, other]. "
         "Return only the label.\n\nSnippet: ```" + snippet + "```"
     )
-    resp = await run_openai_prompt(prompt=prompt, system_prompt="", model="gpt-4o-mini",
+    resp = await run_openai_prompt(prompt=prompt, system_prompt="", model=OPENAI_MODEL,
                                    temperature=0, max_tokens=5)
     return resp.strip().lower()
 

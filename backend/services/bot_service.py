@@ -59,7 +59,10 @@ async def split_content(content, chunk_size=500):
 # Create embeddings using OpenAI
 async def create_embedding(text):
     client = get_openai_client()
+    start = time.perf_counter()
     response =  client.embeddings.create(input=text, model="text-embedding-ada-002")
+    duration = time.perf_counter() - start
+    logging.info(f"OpenAI embeddings.create in {duration:.4f}s (model=text-embedding-ada-002, chars={len(text or '')})")
     return response.data[0].embedding
 
 
@@ -145,8 +148,13 @@ def check_index_stats():
 
 def get_namespace_counts():
     try:
+        _s = time.perf_counter()
         website = supabase.table("documents").select("id", count="exact").eq("namespace", "website").execute()
+        d1 = time.perf_counter() - _s
+        _s = time.perf_counter()
         sales   = supabase.table("documents").select("id", count="exact").eq("namespace", "sales").execute()
+        d2 = time.perf_counter() - _s
+        logging.info(f"Supabase select counts in website={d1:.4f}s sales={d2:.4f}s")
         website_count = getattr(website, "count", None) or 0
         sales_count   = getattr(sales, "count", None) or 0
         total_count   = website_count + sales_count
@@ -196,7 +204,9 @@ async def refresh_url(url: str, content: str | None = None):
         })
 
     # Delete existing rows for this URL within website namespace
+    _s = time.perf_counter()
     supabase.table("documents").delete().eq("namespace", "website").eq("source", url).execute()
+    logging.info(f"Supabase delete website rows for url in {time.perf_counter()-_s:.4f}s")
 
     # Upsert new rows
     rows = []
@@ -209,7 +219,9 @@ async def refresh_url(url: str, content: str | None = None):
             "embedding": v["values"]
         })
     if rows:
+        _s = time.perf_counter()
         supabase.table("documents").upsert(rows).execute()
+        logging.info(f"Supabase upsert {len(rows)} rows in {time.perf_counter()-_s:.4f}s")
     
     # Update hash
     hash_value = compute_hash(content)
@@ -284,7 +296,9 @@ async def retrieve_relevant_chunks(query, top_k=5):
 #         logging.error(f"Failed to export Pinecone data to markdown: {e}")
 def export_pinecone_to_markdown(output_file="pinecone_content.md"):
     try:
+        _s = time.perf_counter()
         resp = supabase.table("documents").select("source,text,namespace").eq("namespace", "website").execute()
+        logging.info(f"Supabase select website export in {time.perf_counter()-_s:.4f}s")
         rows = resp.data or []
         all_texts_by_url = {}
         for r in rows:
@@ -311,8 +325,9 @@ def delete_all_pinecone_data():
     """
     try:
         logging.info("Deleting all rows from Supabase documents table...")
+        _s = time.perf_counter()
         supabase.table("documents").delete().neq("id", None).execute()
-        logging.info("All rows deleted from Supabase documents table successfully.")
+        logging.info(f"All rows deleted from Supabase documents table successfully in {time.perf_counter()-_s:.4f}s.")
     except Exception as e:
         logging.error(f"Failed to delete rows from Supabase: {e}")
 import re

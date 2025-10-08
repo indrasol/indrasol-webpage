@@ -3,7 +3,7 @@
 from __future__ import annotations
 import asyncio, logging, backoff
 from openai import AsyncOpenAI, APIError, APIConnectionError, APITimeoutError
-from config.settings import OPENAI_API_KEY
+from config.settings import OPENAI_API_KEY, OPENAI_MODEL
 
 _LOG = logging.getLogger("openai")
 _CLIENT = AsyncOpenAI(api_key=OPENAI_API_KEY)
@@ -21,7 +21,7 @@ def _on_backoff(details):                       # nice log line for every retry
 async def async_chat(
     messages: list[dict],
     *,
-    model: str = "gpt-4o-mini",
+    model: str = OPENAI_MODEL,
     temperature: float = 0.4,
     max_tokens: int = 400
 ) -> tuple[str, dict]:
@@ -31,11 +31,14 @@ async def async_chat(
     `usage_stats` is already a plain dict → safe to JSON-serialise if you
     want to store per-request token counts.
     """
+    start = asyncio.get_event_loop().time()
     resp = await _CLIENT.chat.completions.create(
         model         = model,
         messages      = messages,
         temperature   = temperature,
         max_tokens    = max_tokens
     )
+    duration = asyncio.get_event_loop().time() - start
+    _LOG.info("OpenAI async chat.completions.create in %.4fs (model=%s, msgs=%s)", duration, model, len(messages))
     usage = resp.usage.model_dump() if resp.usage else {}
     return resp.choices[0].message.content.strip(), usage

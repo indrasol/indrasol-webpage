@@ -3,7 +3,7 @@ import os, requests, logging, datetime, asyncio
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 from models.request_models import CallForm
-from config.settings import VAPI_KEY, ASSISTANT_ID, PHONE_NUMBER_ID
+from config.settings import VAPI_KEY, ASSISTANT_ID, PHONE_NUMBER_ID, OPENAI_MODEL
 from vapi import Vapi
 
 
@@ -29,7 +29,7 @@ ASSISTANT_SPEC = {
         "You are a persuasive yet consultative sales agent for Indrasol. "
         "Follow the Problem → Value → Proof → CTA structure."
     ),
-    "model": { "provider": "openai", "model": "gpt-4o" },
+    "model": { "provider": "openai", "model": OPENAI_MODEL },
     "voice": { "provider": "elevenlabs", "voiceId": "shimmer" },
     "transcriber": { "provider": "deepgram", "model": "nova-2" },
 }

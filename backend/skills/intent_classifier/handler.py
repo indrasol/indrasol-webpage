@@ -6,6 +6,7 @@ from pathlib import Path
 
 from mcp.schema          import Skill, Turn, Conversation, Result
 from services.openai_client_service import async_chat
+from config.settings import OPENAI_MODEL
 
 _LOG = logging.getLogger("skill.intent")
 
@@ -48,7 +49,7 @@ async def _handle(turn: Turn, convo: Conversation) -> Result:
         )
 
         label, usage = await async_chat(
-            model     = "gpt-4.1",
+            model     = OPENAI_MODEL,
             messages  = [
                 {"role": "system", "content": sys_prompt},
                 {"role": "user",   "content": prompt},

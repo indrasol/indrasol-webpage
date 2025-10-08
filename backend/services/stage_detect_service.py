@@ -1,6 +1,7 @@
 import re, logging
 from email_validator import validate_email, EmailNotValidError
 from services.openai_service import run_openai_prompt
+from config.settings import OPENAI_MODEL
 
 
 # ---------- regex helpers ----------
@@ -80,7 +81,7 @@ async def llm_classify(free_text:str)->str:
     prompt = (f"Classify the following snippet into "
               f"[name, email, company, message, other]. "
               f"Return only the label.\n\nSnippet: ```{free_text}```")
-    resp = await run_openai_prompt(prompt, model="gpt-4o-mini")
+    resp = await run_openai_prompt(prompt, model=OPENAI_MODEL)
     return resp.choices[0].message.content.strip().lower()
 
 # ---------- main detector ----------

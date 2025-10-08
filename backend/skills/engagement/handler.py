@@ -17,6 +17,7 @@ from typing import Any
 from mcp.schema    import Conversation, Result, Skill, Turn
 from services.openai_client_service import async_chat
 from services.bot_response_formatter_md import ensure_markdown
+from config.settings import OPENAI_MODEL
 
 _LOG = logging.getLogger("skill.engagement")
 
@@ -47,7 +48,7 @@ async def _handle(turn: Turn, convo: Conversation) -> Result:
         llm_reply = await async_chat(
             system = sys_prompt,
             user   = prompt,
-            model  = "gpt-4o-mini",
+            model  = OPENAI_MODEL,
             temperature = 0.4,
             max_tokens  = 300,
         )
