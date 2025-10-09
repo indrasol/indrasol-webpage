@@ -1,6 +1,7 @@
 import re
 from functools import lru_cache
 from services.openai_service import run_openai_prompt
+from config.settings import OPENAI_MODEL
 
 # --- legacy keywords (fast, free) -----------
 _OBJECTION_KEYWORDS = [
@@ -36,7 +37,7 @@ async def _llm_objection_check(text: str) -> bool:
     """
     prompt = _CLASSIFIER_PROMPT.format(sentence=text.strip())
     try:
-        result = await run_openai_prompt(prompt, model="gpt-3.5-turbo-0125", max_tokens=1, temperature=0)
+        result = await run_openai_prompt(prompt, model=OPENAI_MODEL, max_tokens=1, temperature=0)
         return result.strip().upper().startswith("OBJECTION")
     except Exception as e:
         # if LLM fails, opt-out to regex

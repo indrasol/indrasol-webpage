@@ -11,6 +11,7 @@ from typing  import List
 
 from mcp.schema import Skill, Turn, Conversation, Result
 from services.openai_client_service import async_chat
+from config.settings import OPENAI_MODEL
 
 _LOG = logging.getLogger("skill.sales")
 
@@ -61,7 +62,7 @@ async def _handle(turn: Turn, convo: Conversation) -> Result:
 
     try:
         reply, usage = await async_chat(
-            model     = "gpt-4.1",
+            model     = OPENAI_MODEL,
             messages  = [
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user",   "content": prompt},

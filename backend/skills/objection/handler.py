@@ -13,6 +13,7 @@ from typing import Any, List
 
 from mcp.schema   import Skill, Turn, Conversation, Result
 from services.openai_client_service import async_chat
+from config.settings import OPENAI_MODEL
 
 _LOG         = logging.getLogger("skill.objection")
 # _PROMPT_TMPL = Path(__file__).with_name("prompt.md").read_text()
@@ -61,7 +62,7 @@ async def _handle(turn: Turn, convo: Conversation) -> Result:
         reply = await async_chat(
             system=sys_prompt,
             user  = prompt,
-            model = "gpt-4.1",
+            model = OPENAI_MODEL,
             temp  = 0.4,
             tokens= 280,
         )

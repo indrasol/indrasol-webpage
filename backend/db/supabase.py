@@ -27,9 +27,14 @@ async def run_supabase_async(func):
 
 # Helper for safer Supabase operations with error handling
 async def safe_supabase_operation(operation, error_message="Supabase operation failed"):
+    start = asyncio.get_event_loop().time()
     try:
-        return await run_supabase_async(operation)
+        result = await run_supabase_async(operation)
+        duration = asyncio.get_event_loop().time() - start
+        logging.info(f"Supabase op ok in {duration:.4f}s: {getattr(operation, '__name__', 'lambda')}" )
+        return result
     except Exception as e:
-        logging.exception(f"{error_message}: {str(e)}")
+        duration = asyncio.get_event_loop().time() - start
+        logging.exception(f"{error_message} after {duration:.4f}s: {str(e)}")
         raise HTTPException(status_code=500, detail=f"{error_message}: {str(e)}")
 

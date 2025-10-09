@@ -3,6 +3,7 @@ from functools import lru_cache
 from typing import Final
 
 from services.openai_service import run_openai_prompt   # already retry-wrapped
+from config.settings import OPENAI_MODEL
 
 # ── 1. Regex heuristics ────────────────────────────────────────────
 _WH_PREFIX: Final = r"^(where|what|when|who|which|how\s+(?:many|long|much)|do you|does it|is there|are there)"
@@ -35,7 +36,7 @@ async def _llm_is_factual(text: str) -> bool:
     try:
         resp = await run_openai_prompt(
             _FALLBACK_PROMPT.format(q=text.replace('"', "'")),
-            model="gpt-3.5-turbo-0125",
+            model=OPENAI_MODEL,
             max_tokens=1,
             temperature=0
         )

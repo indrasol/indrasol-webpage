@@ -1,6 +1,6 @@
 import os, asyncio,backoff, logging
 from config.logging import setup_logging
-from config.settings import OPENAI_API_KEY
+from config.settings import OPENAI_API_KEY, OPENAI_MODEL
 from openai import OpenAI, APIError, APIConnectionError, APITimeoutError
 
 setup_logging()
@@ -24,20 +24,27 @@ def _log_backoff(details):
     on_backoff=logging.exception
 )
 def _sync_completion(model: str, messages: list, temperature: float, max_tokens: int):
-    return openai_client.chat.completions.create(
+    import time
+    _s = time.perf_counter()
+    resp = openai_client.chat.completions.create(
         model=model,
         messages=messages,
         temperature=temperature,
-        max_tokens=max_tokens
+        max_tokens=max_tokens,
+        n=1
     )
+    _d = time.perf_counter() - _s
+    logging.info("OpenAI chat.completions.create in %.4fs (model=%s, input_tokens=%s)", _d, model, getattr(resp, 'usage', None) and resp.usage.prompt_tokens)
+    return resp
 
 async def run_openai_prompt(
     prompt: str,
-    model: str = "gpt-4o",
+    model: str = OPENAI_MODEL,
     temperature: float = 0.7,
     max_tokens: int = 300,
     system_prompt: str = "You are a helpful AI assistant."
 ) -> str:
+    start = asyncio.get_event_loop().time()
     resp = await asyncio.to_thread(
         _sync_completion,
         model=model,
@@ -48,4 +55,6 @@ async def run_openai_prompt(
         temperature=temperature,
         max_tokens=max_tokens
     )
+    duration = asyncio.get_event_loop().time() - start
+    logging.info("OpenAI run_openai_prompt total %.4fs (model=%s, chars=%s)", duration, model, len(prompt or ""))
     return resp.choices[0].message.content.strip()

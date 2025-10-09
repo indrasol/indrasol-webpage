@@ -25,22 +25,34 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
 async def embed_text(text: str) -> List[float]:
     """Returns 1536-d embedding list."""
+    start = asyncio.get_event_loop().time()
     resp = await asyncio.to_thread(
         lambda: openai_client.embeddings.create(
             input=text,
             model=EMBED_MODEL
         )
     )
+    duration = asyncio.get_event_loop().time() - start
+    logger.info("OpenAI embeddings.create in %.4fs (model=%s, chars=%s)", duration, EMBED_MODEL, len(text or ""))
     return resp.data[0].embedding
 
 # ── Retry wrappers for upsert / rpc ───────────────────────────────────
 @retry(wait=wait_exponential(), stop=stop_after_attempt(5))
 def _upsert_batch(rows: List[Dict[str, Any]]):
+    import time as _t
+    _s = _t.perf_counter()
     supabase.table("documents").upsert(rows).execute()
+    _d = _t.perf_counter() - _s
+    logger.info("Supabase upsert %s rows in %.4fs", len(rows), _d)
 
 @retry(wait=wait_exponential(), stop=stop_after_attempt(5))
 def _rpc_match(payload: Dict[str, Any]):
-    return supabase.rpc("match_documents", payload).execute()
+    import time as _t
+    _s = _t.perf_counter()
+    res = supabase.rpc("match_documents", payload).execute()
+    _d = _t.perf_counter() - _s
+    logger.info("Supabase rpc match_documents in %.4fs (top_k=%s, ns=%s)", _d, payload.get("match_count"), payload.get("namespace"))
+    return res
 
 # ── Public helpers ────────────────────────────────────────────────────
 async def store_documents(

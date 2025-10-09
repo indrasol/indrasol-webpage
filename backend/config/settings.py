@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 OPENAI_API_KEY = os.getenv("OPENAIIND")
+OPENAI_MODEL = os.getenv("OPEN_AI_MODEL_IND")
 PINECONE_API_KEY = os.getenv("PINECONEIND")
 SUPABASE_URL = os.getenv("SUPABASEURLIND")
 SUPABASE_SERVICE_KEY = os.getenv("SUPABASESERVICEKEYIND")
